@@ -1,0 +1,8 @@
+---
+
+- hosts: localhost
+  gather_facts: no
+  roles:
+    - ocp-post-roles/configure_classification_banner
+  environment:
+    KUBECONFIG: "/home/{{ ansible_user }}/.kube/deployment{{ deployment_number }}-ocp.conf"

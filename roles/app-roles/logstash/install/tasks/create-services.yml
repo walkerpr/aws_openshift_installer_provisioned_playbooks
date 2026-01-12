@@ -1,0 +1,6 @@
+---
+
+- name: Create logstash service
+  k8s:
+    definition: "{{ lookup('template', logstash_service_manifest) }}"
+

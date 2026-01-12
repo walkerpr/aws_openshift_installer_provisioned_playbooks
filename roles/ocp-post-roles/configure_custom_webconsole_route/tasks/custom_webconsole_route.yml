@@ -1,0 +1,15 @@
+---
+
+- name: Configure Custom Webconsole Route
+  k8s:
+    definition:
+      apiVersion: config.openshift.io/v1
+      kind: Ingress
+      metadata:
+        name: cluster
+      spec:
+        componentRoutes:
+          - name: console
+            namespace: openshift-console
+            hostname: openshift-console.{{ apps_base_domain }}
+    apply: yes

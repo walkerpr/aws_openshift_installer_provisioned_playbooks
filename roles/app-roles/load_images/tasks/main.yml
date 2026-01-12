@@ -1,0 +1,67 @@
+---
+
+# Note: We are using docker because the version of podman shipped
+# with RHEL7 is not very mature. Among other things, it cannot handle
+# container image archives that hold multiple images, which is a
+# required capability. Additionally, the many ansible podman modules
+# are not supported in Ansible 2.9.
+
+- name: Install Docker package
+  package:
+    name: docker
+    state: present
+
+- name: Enable and start Docker
+  service:
+    name: docker
+    enabled: true
+    state: started
+
+# Note: Several ansible Docker modules require docker-py or the
+# Docker API for Python. Although docker-py has been superseded by
+# the latter, it is readily available as an RPM. Docker SDK for
+# Python is only available via pip and its most recent versions no
+# longer support python 2.7.
+
+- name: Install python-docker package
+  package:
+    name: python-docker
+    state: present
+
+- name: Install application-sample-images package
+  package:
+    name: application-sample-images
+    state: present
+
+- name: Load container images
+  docker_image:
+    load_path: "/opt/container-images/application-sample/application-sample-images-{{ sample_version }}.tar"
+    name: "application-sample/{{ item }}"
+    #repository: "{{ ocp_registry_endpoint }}/application-sample/{{ item }}"
+    source: load
+    tag: "{{ sample_version }}"
+  loop: "{{ image_list }}"
+
+- name: Re-tag container images
+  docker_image:
+    name: "application-sample/{{ item }}"
+    repository: "{{ ocp_registry_endpoint }}/application-sample/{{ item }}"
+    source: local
+    tag: "{{ sample_version }}"
+  loop: "{{ image_list }}"
+
+- name: Log in to registry
+  docker_login:
+    registry_url: "{{ ocp_registry_endpoint }}"
+    username: "{{ vault_ocp_registry_username }}"
+    password: "{{ vault_ocp_registry_password }}"
+    validate_certs: true
+
+- name: Push container images to registry
+  docker_image:
+    name: "{{ ocp_registry_endpoint }}/application-sample/{{ item }}"
+    push: true
+    source: local
+    tag: "{{ sample_version }}"
+  loop: "{{ image_list }}"
+

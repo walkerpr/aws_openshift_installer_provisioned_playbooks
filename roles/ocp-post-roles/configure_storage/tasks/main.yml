@@ -1,0 +1,165 @@
+---
+- name: Get subnet 0
+  amazon.aws.ec2_vpc_subnet_info:
+    filters:
+      "tag:Name": sample-deployment-{{ deployment_number }}-subnet-0
+  register: subnet_info_0
+
+- name: Get subnet 1
+  amazon.aws.ec2_vpc_subnet_info:
+    filters:
+      "tag:Name": sample-deployment-{{ deployment_number }}-subnet-1
+  register: subnet_info_1
+
+
+
+- name: Create operator group
+  k8s:
+    namespace: openshift-cluster-csi-drivers
+    definition:
+      apiVersion: operators.coreos.com/v1
+      kind: OperatorGroup
+      metadata:
+        name: openshift-cluster-csi-drivers-operator-group
+    state: present
+
+- name: Apply EFS operator subscription
+  k8s:
+    definition:
+      apiVersion: operators.coreos.com/v1alpha1
+      kind: Subscription
+      metadata:
+        name: aws-efs-csi-driver-operator
+        namespace: openshift-cluster-csi-drivers
+        labels:
+          operators.coreos.com/aws-efs-csi-driver-operator.openshift-cluster-csi-drivers: ''
+      spec:
+        channel: stable
+        installPlanApproval: Automatic
+        name: aws-efs-csi-driver-operator
+        source: redhat-operators
+        sourceNamespace: openshift-marketplace
+    apply: yes
+
+- name: Apply EFS operator driver
+  k8s:
+    definition:
+      apiVersion: operator.openshift.io/v1
+      kind: ClusterCSIDriver
+      metadata:
+          name: efs.csi.aws.com
+      spec:
+        managementState: Managed
+    apply: yes
+
+- name: Ensure EFS operator pod is running
+  k8s_info:
+    kind: pod
+    namespace: openshift-cluster-csi-drivers
+    field_selectors:
+      - status.phase=Running
+    label_selectors:
+      - app=aws-efs-csi-driver-operator
+  register: pod_result
+  until: pod_result.resources | default([]) | count > 0
+  delay: 30
+  retries: 20
+
+# - name: Create EFS storage class
+#   k8s:
+#     definition:
+#       apiVersion: storage.k8s.io/v1
+#       kind: StorageClass
+#       metadata:
+#         name: efs
+#       provisioner: efs.csi.aws.com
+#       parameters:
+#         provisioningMode: efs-ap
+#         fileSystemId: "{{ efs_info.efs.file_system_id }}"
+#         directoryPerms: "777"
+#         basePath: "/mnt/nfs"
+#     state: present
+
+- name: Disable EBS as default
+  k8s:
+    definition:
+      apiVersion: storage.k8s.io/v1
+      kind: StorageClass
+      metadata:
+        name: gp3-csi
+        annotations:
+          storageclass.kubernetes.io/is-default-class: "false"
+
+- name: Create NFS storage class
+  k8s:
+    definition:
+      apiVersion: storage.k8s.io/v1
+      kind: StorageClass
+      metadata:
+        name: file
+        annotations:
+          storageclass.kubernetes.io/is-default-class: "true"
+      provisioner: kubernetes.io/no-provisioner
+    state: present
+
+- name: Configure NFS persistent volumes
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: PersistentVolume
+      metadata:
+        name: "{{ item.name }}"
+      spec:
+        accessModes:
+          - ReadWriteMany
+        capacity:
+          storage: "{{ item.size }}"
+        nfs:
+          path: "/mnt/nfs/deployment{{ deployment_number }}/{{ item.name }}"
+          server: "nfs.dev.sample.dev"
+        persistentVolumeReclaimPolicy: Retain
+        storageClassName: file
+    state: present
+  loop: "{{ ocp4_nfs_volumes }}"
+
+
+
+# - name: Apply EFS  PVC
+#   k8s:
+#     definition:
+#       apiVersion: v1
+#       kind: PersistentVolumeClaim
+#       metadata:
+#         name: efs-csi-pvc
+#         namespace: default
+#       spec:
+#         storageClassName: file
+#         accessModes:
+#           - ReadWriteMany
+#         resources:
+#           requests:
+#             storage: 5Gi
+#     apply: yes
+
+# - name: Apply EFS PV
+#   k8s:
+#     definition:
+#       apiVersion: v1
+#       kind: PersistentVolume
+#       metadata:
+#         name: "{{ item.name }}"
+#       spec:
+#         capacity:
+#           storage: "{{ item.size }}"
+#         volumeMode: Filesystem
+#         accessModes:
+#           - ReadWriteMany
+#         persistentVolumeReclaimPolicy: Retain
+#         storageClassName: file
+#         csi:
+#           driver: efs.csi.aws.com
+#           volumeHandle: "{{ efs_info.efs.file_system_id }}"
+#           volumeAttributes:
+#             encryptInTransit: "true"
+#     state: present
+#   loop: "{{ ocp4_nfs_volumes }}"

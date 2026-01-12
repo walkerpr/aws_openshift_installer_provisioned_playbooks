@@ -1,0 +1,27 @@
+---
+
+- name: Install firewalld
+  package:
+    name: firewalld
+    state: present
+
+- name: Enable and start firewalld
+  systemd:
+    name: firewalld
+    state: started
+    enabled: true
+
+- name: Configure firewall to allow http
+  firewalld:
+    port: "{{ http_port }}/tcp"
+    immediate: yes
+    permanent: yes
+    state: enabled
+
+- name: Configure firewall to allow https
+  firewalld:
+    port: "{{ https_port }}/tcp"
+    immediate: yes
+    permanent: yes
+    state: enabled
+

@@ -1,0 +1,13 @@
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dil-services
+  namespace: application-sample
+data:
+  dil-ca.crt: |
+{{ lookup('file', dil_ca_certificate_file) | indent(4, true) }}
+  dil-ca.key: |
+{{ lookup('file', dil_ca_privatekey_file)  | indent(4, true) }}
+

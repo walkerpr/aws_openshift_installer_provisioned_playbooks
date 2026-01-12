@@ -1,0 +1,8 @@
+---
+
+aa_allowed_registries:
+  - "{{ application_name }}.{{ apps_base_domain }}"
+
+current_allowed_registries: "{{ image_result.resources[0].spec.registrySources.allowedRegistries | default([]) }}"
+
+desired_allowed_registries: "{{ current_allowed_registries | union(aa_allowed_registries) }}"

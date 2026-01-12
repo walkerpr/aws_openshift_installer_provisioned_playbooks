@@ -1,0 +1,28 @@
+---
+
+- name: Create owf database deployment config
+  k8s:
+    definition: "{{ lookup('template', owfdb_deploymentconfig_manifest) }}"
+
+- name: Sleep for five minutes to give marketplace head start (please be patient)
+  wait_for:
+    timeout: 300
+  delegate_to: localhost
+
+- name: Ensure owf database pod is running (2m)
+  k8s_info:
+    kind: Pod
+    namespace: application-sample
+    field_selectors:
+      - status.phase=Running
+    label_selectors:
+      - app=owfdb
+  register: pod_result
+  until: pod_result.resources | count > 0
+  delay: 10
+  retries: 12
+
+- name: Create owf deployment config
+  k8s:
+    definition: "{{ lookup('template', owf_deploymentconfig_manifest) }}"
+

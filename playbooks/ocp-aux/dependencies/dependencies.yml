@@ -1,0 +1,6 @@
+---
+
+- hosts: localhost
+  gather_facts: no
+  roles:
+    - ocp-aux-roles/dependencies

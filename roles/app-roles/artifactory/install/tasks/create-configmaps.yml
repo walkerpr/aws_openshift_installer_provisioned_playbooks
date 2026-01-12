@@ -1,0 +1,9 @@
+---
+
+# Note: Users must provide their own valid Artifactory license and
+# override the default license key or else the install will fail.
+
+- name: Create artifactory configmap
+  k8s:
+    definition: "{{ lookup('template', artifactory_configmap_manifest) }}"
+

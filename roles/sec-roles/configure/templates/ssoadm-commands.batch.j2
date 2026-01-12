@@ -1,0 +1,50 @@
+# Disable perpetual attribute caching
+update-server-cfg -s default -a "com.iplanet.am.sdk.caching.enabled=false"
+update-server-cfg -s default -a "com.sun.identity.saml.xmlsig.keystore={{ aa_am_keystore_path }}"
+update-server-cfg -s default -a "com.sun.identity.saml.xmlsig.certalias={{ cert_alias }}"
+update-server-cfg -s default -a "com.sun.identity.saml.xmlsig.storepass={{ aa_am_storepass_path }}"
+update-server-cfg -s default -a "com.sun.identity.saml.xmlsig.keypass={{ aa_am_keypass_path }}"
+update-server-cfg -s default -a "com.sun.identity.saml.xmlsig.storetype=PKCS12"
+update-server-cfg -s "{{ am_url }}" -a "com.iplanet.services.debug.level=off"
+
+# Per OpenAM security guidance
+update-server-cfg -s default -a "openam.auth.soap.rest.generic.authentication.exception=true"
+update-server-cfg -s default -a "com.sun.identity.cookie.httponly=true"
+update-server-cfg -s default -a "com.iplanet.am.cookie.secure=true" 
+update-server-cfg -s default -a "com.iplanet.am.cookie.name=openAmCookie"
+
+{% if ldap_server == 'msad-opendj' or ldap_server == 'opendj' %}
+# Note: OpenDJ datastore should only be configured when msad-opendj
+# or opendj are being used. If msad is being used by itself then
+# the OpenDJ datastore should not be configured.
+
+# Configure OpenDJ datastore
+update-datastore -e {{ sample_realm }} -m OpenDJ -D datastore-attributes1.txt
+update-datastore -e {{ sample_realm }} -m OpenDJ -D datastore-attributes2.txt
+{% endif %}
+
+# Configure authentication chain
+set-realm-svc-attrs -e {{ sample_realm }} -s iPlanetAMAuthService -a "iplanet-am-auth-org-config=certChain"
+
+set-realm-svc-attrs -e {{ sample_realm }} -s iPlanetAMAuthService -a "iplanet-am-auth-dynamic-profile-creation=true"
+set-realm-svc-attrs -e {{ sample_realm }} -s iPlanetAMAuthService -a "iplanet-am-auth-key-alias={{ cert_alias }}"
+
+# Configure whether XUI interface is enabled or disabled. It was
+# previously incompatible with sample, but it seems to work now.
+set-attr-defs -s iPlanetAMAuthService -t Global -a "openam-xui-interface-enabled={{ sample_enable_xui }}"
+
+# Configure federation
+create-cot -e {{ sample_realm }} -t {{ sample_cot }}
+
+# Create hosted IdP entity
+import-entity -e {{ sample_realm }} -t {{ sample_cot }} -m ep/sample_idp.xml               -x ep/sample_idp-extended.xml
+import-entity -e {{ sample_realm }} -t {{ sample_cot }} -m ep/owf_sp.xml                    -x ep/owf_sp-extended.xml
+import-entity -e {{ sample_realm }} -t {{ sample_cot }} -m ep/marketplace_sp.xml            -x ep/marketplace_sp-extended.xml
+import-entity -e {{ sample_realm }} -t {{ sample_cot }} -m ep/artifactory_sp.xml            -x ep/artifactory_sp-extended.xml
+import-entity -e {{ sample_realm }} -t {{ sample_cot }} -m ep/install-manager_sp.xml        -x ep/install-manager_sp-extended.xml
+import-entity -e {{ sample_realm }} -t {{ sample_cot }} -m ep/distributionfilter-api_sp.xml -x ep/distributionfilter-api_sp-extended.xml
+ 
+# Configure session and idle timeouts per STIG
+set-attr-defs -s iPlanetAMSessionService -t dynamic -a "iplanet-am-session-max-session-time=30"
+set-attr-defs -s iPlanetAMSessionService -t dynamic -a "iplanet-am-session-max-idle-time=20"
+

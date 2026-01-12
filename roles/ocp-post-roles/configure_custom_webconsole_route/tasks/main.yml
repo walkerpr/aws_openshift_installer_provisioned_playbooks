@@ -1,0 +1,3 @@
+---
+
+- import_tasks: custom_webconsole_route.yml

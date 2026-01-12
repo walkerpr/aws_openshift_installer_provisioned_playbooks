@@ -1,0 +1,8 @@
+---
+
+- name: Enable haproxy_connect_any SELinux boolean
+  seboolean:
+    name: haproxy_connect_any
+    persistent: true
+    state: true
+

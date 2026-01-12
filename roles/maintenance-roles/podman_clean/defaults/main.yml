@@ -1,0 +1,11 @@
+---
+podman_images_to_remove:
+  - name: image-registry.openshift-image-registry.svc:5000/application-sample/artifactory
+  - name: image-registry.openshift-image-registry.svc:5000/application-sample/artifactory-sidecar
+  - name: image-registry.openshift-image-registry.svc:5000/application-sample/beats
+  - name: image-registry.openshift-image-registry.svc:5000/application-sample/cmmonitor
+  - name: image-registry.openshift-image-registry.svc:5000/application-sample/dil-services
+  - name: image-registry.openshift-image-registry.svc:5000/application-sample/httpd
+  - name: image-registry.openshift-image-registry.svc:5000/application-sample/installmanager
+  - name: image-registry.openshift-image-registry.svc:5000/application-sample/logstash
+  - name: image-registry.openshift-image-registry.svc:5000/application-sample/postgres

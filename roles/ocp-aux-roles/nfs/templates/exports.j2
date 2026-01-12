@@ -1,0 +1,8 @@
+{% for item in ocp4_nfs_volumes %}
+{{ nfs_dir }}/{{ item.name }} {{ subnet_info_0.subnets[0].cidr_block }}({{ nfs_options_shares }})
+{% endfor %}
+{{ nfs_dir }}/registry {{ subnet_info_0.subnets[0].cidr_block }}({{ nfs_options_shares_registry }})
+{% for item in ocp4_nfs_volumes %}
+{{ nfs_dir }}/{{ item.name }} {{ subnet_info_1.subnets[0].cidr_block }}({{ nfs_options_shares }})
+{% endfor %}
+{{ nfs_dir }}/registry {{ subnet_info_1.subnets[0].cidr_block }}({{ nfs_options_shares_registry }})

@@ -1,0 +1,18 @@
+---
+
+# Registry and repository prefix where App sample images are stored
+pull_repository: "{{ ocp_registry_endpoint }}/application-sample"
+
+# FQDN of App sample
+sample_fqdn: "{{ sample_name }}.{{ apps_base_domain }}"
+
+# Certificate alias of App sample
+server_alias: "{{ sample_fqdn }}"
+
+# Certificate alias of security server
+idp_alias: "{{ groups.am[0] }}"
+
+
+logstash_service_manifest:          "manifests/core/service/logstash.yml.j2"
+
+logstash_deploymentconfig_manifest: "manifests/apps.openshift.io/deploymentconfig/logstash.yml.j2"

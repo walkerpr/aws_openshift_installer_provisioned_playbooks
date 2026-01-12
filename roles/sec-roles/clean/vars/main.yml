@@ -1,0 +1,11 @@
+---
+
+sample_fqdn: "{{ sample_name }}.{{ apps_base_domain }}"
+
+ssoadm: "{{ ssoadm_dir }}/{{ am_deployment_endpoint }}/bin/ssoadm"
+
+sample_realm: sample
+
+sample_cot: sample
+
+sample_idp: sample

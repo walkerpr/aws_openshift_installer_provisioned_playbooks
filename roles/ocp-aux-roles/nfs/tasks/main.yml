@@ -1,0 +1,11 @@
+---
+
+# - import_tasks: firewall.yml
+
+- import_tasks: package.yml
+
+- import_tasks: nfs-dir.yml
+
+- import_tasks: sub-dirs.yml
+
+- import_tasks: configs.yml

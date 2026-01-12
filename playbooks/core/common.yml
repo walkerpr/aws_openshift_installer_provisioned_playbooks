@@ -1,0 +1,7 @@
+---
+
+- hosts: resource, api_int_lb, api_ext_lb, ingress_lb
+  gather_facts: no
+  roles:
+    - core-roles/common
+

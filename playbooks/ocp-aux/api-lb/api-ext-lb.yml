@@ -1,0 +1,7 @@
+---
+
+- hosts: api_ext_lb
+  gather_facts: no
+  roles:
+    - ocp-aux-roles/api_ext_lb
+

@@ -1,0 +1,10 @@
+---
+
+- name: Set storage class type when ctu2_kubeframe is true
+  set_fact:
+    application_storage_class: ocs-storagecluster-cephfs
+  when: ctu2_kubeframe|bool
+
+- name: Create data PVC
+  k8s:
+    definition: "{{ lookup('template', data_pvc_manifest) }}"

@@ -1,0 +1,7 @@
+---
+
+- import_tasks: create_secret.yml
+
+- import_tasks: configure_oauth.yml
+
+- import_tasks: configure_user.yml

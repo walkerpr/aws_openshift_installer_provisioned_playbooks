@@ -1,0 +1,109 @@
+---
+
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+    version: {{ sample_version }}
+  labels:
+    app: installmanagerdb
+  name: installmanagerdb
+  namespace: application-sample
+spec:
+  replicas: 1
+  selector:
+    app: installmanagerdb
+    deploymentconfig: installmanagerdb
+  strategy:
+    type: Rolling
+    rollingParams:
+      updatePeriodSeconds: 1
+      intervalSeconds: 1
+      timeoutSeconds: 600
+  template:
+    metadata:
+      labels:
+        app: installmanagerdb
+        deploymentconfig: installmanagerdb
+    spec:
+      containers:
+        - env:
+            - name: DBPASS
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: dbpass
+            - name: new_keystore_password
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: newkeystorepassword
+            - name: keystore_password
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: keystorepassword
+            - name: DBUSER
+              valueFrom:
+                configMapKeyRef:
+                  key: DBUSER
+                  name: sampleproperties
+            - name: DBNAME
+              value: storefront
+          envFrom:
+            - configMapRef:
+                name: sampleproperties
+          image: >-
+            {{ pull_repository }}/postgres:{{ sample_version }}
+          imagePullPolicy: Always
+          livenessProbe:
+            tcpSocket:
+              port: 5432
+            initialDelaySeconds: 900
+            periodSeconds: 20
+            timeoutSeconds: 1
+          name: installmanagerdb
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 43
+            tcpSocket:
+              port: 5432
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            timeoutSeconds: 5
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /var/lib/pgsql
+              name: volume-data
+              subPath: installmanagerdb
+            - mountPath: /opt/applicationsample/certs/server
+              name: volume-installmanagerdbcerts
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        supplementalGroups: [ 65534 ]
+      serviceAccount: sample-sa
+      serviceAccountName: sample-sa
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: volume-data
+          persistentVolumeClaim:
+            claimName: data
+        - configMap:
+            defaultMode: 420
+            items:
+              - key: cabundle.crt.tmp
+                path: cabundle.crt.tmp
+              - key: idp.crt
+                path: {{ idp_alias }}.crt
+              - key: server_private_key
+                path: {{ server_alias }}.key
+              - key: server_certificate
+                path: {{ server_alias }}.crt
+            name: certificates
+          name: volume-installmanagerdbcerts

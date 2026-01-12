@@ -1,0 +1,10 @@
+---
+
+- name: Create NFS top-level directory
+  file:
+    path: "{{ nfs_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode:  0755
+  become: true

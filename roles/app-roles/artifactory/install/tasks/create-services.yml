@@ -1,0 +1,10 @@
+---
+
+- name: Create artifactory database service
+  k8s:
+    definition: "{{ lookup('template', artifactorydb_service_manifest) }}"
+
+- name: Create artifactory service
+  k8s:
+    definition: "{{ lookup('template', artifactory_service_manifest) }}"
+

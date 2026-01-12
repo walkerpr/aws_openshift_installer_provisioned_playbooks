@@ -1,0 +1,10 @@
+---
+
+- import_tasks: create-configmaps.yml
+
+- import_tasks: create-services.yml
+
+- import_tasks: create-deployments.yml
+
+- import_tasks: create-routes.yml
+

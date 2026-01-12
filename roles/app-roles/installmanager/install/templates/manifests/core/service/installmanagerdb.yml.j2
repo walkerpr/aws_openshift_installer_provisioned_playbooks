@@ -1,0 +1,21 @@
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    version: {{ sample_version }}
+  labels:
+    app: installmanagerdb
+  name: installmanagerdb
+  namespace: application-sample
+spec:
+  ports:
+    - name: 5432-tcp
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+  selector:
+    app: installmanagerdb
+  sessionAffinity: None
+  type: ClusterIP

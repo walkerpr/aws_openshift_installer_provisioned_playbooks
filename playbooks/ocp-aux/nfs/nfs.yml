@@ -1,0 +1,8 @@
+---
+- hosts: nfs
+  gather_facts: no
+  become: false
+  roles:
+    - ocp-aux-roles/nfs
+  environment:
+    KUBECONFIG: "/home/{{ ansible_user }}/.kube/deployment{{ deployment_number }}-ocp.conf"

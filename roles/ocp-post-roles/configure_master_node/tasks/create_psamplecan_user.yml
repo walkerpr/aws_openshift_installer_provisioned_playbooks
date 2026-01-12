@@ -1,0 +1,75 @@
+---
+
+- name: Check if user exists
+  become: true
+  user:
+    name: pacscan
+    state: present
+  register: user_exists
+
+- name: Create user
+  become: true
+  user:
+    name: pacscan
+    state: present
+  when: user_exists.failed
+
+- name: set authorized_key
+  ansible.posix.authorized_key:
+    user: pacscan
+    state: present
+    key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDA8aS2oFDR831kLKF3DTeewYQhvCTnBiyR5MeGISa/lWrG3MfyelVW8R6NMUf0Mil2uqUednMb4qNZuHsWMfG0lAx1IN1Qz+8ww94iXgH/CKADbm6xS+A5Ok8s8PQjenRFERwfZBiksX27B89Y7bveWYvlywsnGkwRDhlvackOBncq9yFv83pbpvEP8uFMHDOXahu2UjEmJDMmwVKIRaiPnYkXsxRWv6lx2tMyrSwT3X6tmNiBQ6D8Fo0aQhn/k6oRIQYF0Ex5cMIRN0ssIUP6oW7fI4zhVBWYHBq3Lk0n+2HDoIvrRTF8JARdqO3KJqQ63RSoYX8P/q/GYSbmvRtK9b7jCVD0avv5vNro10N+GLTFkpyh7noBdCohZ018DMXUjRGBZwinUDU4u/Gzbm8/2dr5tfjBL6wDDHQ1KOApupoezR2++Un12FvLVQANs6NiX4nlgO3gACqwZ3mwvmkLi3LtMDfdtpDeL6i0BEToVq9y4iIGfZI1vmKhSgdqK1c="
+
+- name: Check if pacscan file exists
+  stat:
+    path: "/etc/sudoers.d/pacscan_file"
+  register: pacscan_file
+
+- name: Create pacscan file if it does not exist
+  file:
+    path: /etc/sudoers.d/pacscan_file
+    owner: root
+    group: root
+    mode: '0440'
+    state: touch
+  when: not pacscan_file.stat.exists
+
+- name: configure pacscan sudoers
+  ansible.builtin.copy:
+    dest: /etc/sudoers.d/pacscan_file
+    content: |
+      pacscan	ALL=(root)	NOPASSWD: NOEXEC: /usr/bin/netstat -a -n
+      pacscan	ALL=(root)	NOPASSWD: NOEXEC: /usr/bin/ls
+      pacscan	ALL=(root)	NOPASSWD: NOEXEC: /sbin/dmidecode 
+      pacscan	ALL=(root)	NOPASSWD: NOEXEC: /usr/bin/cat /etc/login.defs
+      pacscan	ALL=(root)	NOPASSWD: NOEXEC: /usr/bin/cat /etc/shadow
+      pacscan	ALL=(root)	NOPASSWD: NOEXEC: /usr/bin/cat /etc/tenable_tag 
+      pacscan	ALL=(root)	NOPASSWD: NOEXEC: /opt/McAfee/cma/bin/cmdagent -i
+      pacscan	ALL=(root)	NOPASSWD: NOEXEC: /sbin/lsmod
+      pacscan	ALL=(root)	NOPASSWD: NOEXEC: /usr/bin/find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin   -maxdepth 4 -type f -name 'TokenConverter\*'
+      pacscan	ALL=(root)	NOPASSWD: /bin/grep . /sys/devices/system/cpu/vulnerabilities/l1tf /sys/devices/system/cpu/vulnerabilities/mds /sys/devices/system/cpu/vulnerabilities/meltdown /sys/devices/system/cpu/vulnerabilities/spec_store_bypass /sys/devices/system/cpu/vulnerabilities/spectre_v1 /sys/devices/system/cpu/vulnerabilities/spectre_v2
+      pacscan	ALL=(root)	NOPASSWD: /bin/grep . /sys/devices/system/cpu/vulnerabilities/itlb_multihit /sys/devices/system/cpu/vulnerabilities/l1tf /sys/devices/system/cpu/vulnerabilities/mds /sys/devices/system/cpu/vulnerabilities/meltdown /sys/devices/system/cpu/vulnerabilities/spec_store_bypass /sys/devices/system/cpu/vulnerabilities/spectre_v1 /sys/devices/system/cpu/vulnerabilities/spectre_v2 /sys/devices/system/cpu/vulnerabilities/tsx_async_abort
+      pacscan	ALL=(root)	NOPASSWD: NOEXEC: /sbin/iptables -L -n -v -t filter
+      pacscan	ALL=(root)	NOPASSWD: NOEXEC: /sbin/iptables -L -n -v -t nat
+      pacscan	ALL=(root)	NOPASSWD: NOEXEC: /usr/bin/grep . /sys/devices/system/cpu/vulnerabilities/*
+
+- name: Validate the sudoers file before saving
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '^%root ALL='
+    line: 'pacscan ALL=(ALL) NOPASSWD: ALL'
+    validate: '/usr/sbin/visudo -cf %s'
+
+- name: Insert/Update "Match User" configuration block in /etc/ssh/sshd_config
+  ansible.builtin.blockinfile:
+    path: /etc/ssh/sshd_config
+    block: |
+      Match user pacscan
+      PasswordAuthentication yes
+      PubkeyAuthentication yes
+
+- name: Stop and Start ssh
+  service:
+    name: sshd
+    state: restarted

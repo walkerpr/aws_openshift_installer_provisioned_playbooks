@@ -1,0 +1,19 @@
+---
+
+- name: Ensure firewalld is installed
+  package:
+    name: firewalld
+    state: present
+
+- name: Ensure firewalld is enabled and started
+  service:
+    name: firewalld
+    state: started
+    enabled: true
+
+- name: Allow NFS traffic
+  firewalld:
+    service: nfs
+    immediate: yes
+    permanent: yes
+    state: enabled

@@ -1,0 +1,10 @@
+---
+
+- name: Create marketplace database service
+  k8s:
+    definition: "{{ lookup('template', marketplacedb_service_manifest) }}"
+
+- name: Create marketplace service
+  k8s:
+    definition: "{{ lookup('template', marketplace_service_manifest) }}"
+

@@ -1,0 +1,4 @@
+---
+- import_playbook: dependencies/dependencies.yml
+
+- import_playbook: nfs/nfs.yml

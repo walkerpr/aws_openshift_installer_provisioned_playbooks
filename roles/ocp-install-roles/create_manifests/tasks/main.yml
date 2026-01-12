@@ -1,0 +1,6 @@
+---
+
+- name: Generate manifests
+  command: >
+    openshift-install create manifests --dir={{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster
+  become_user: "{{ ansible_user }}"

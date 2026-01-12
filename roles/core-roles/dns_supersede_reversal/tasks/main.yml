@@ -1,0 +1,11 @@
+---
+
+- name: Delete dhclient.conf file
+  file:
+    path: /etc/dhcp/dhclient.conf
+    state: absent
+
+- name: Restart NetworkManager
+  service:
+    name: NetworkManager
+    state: restarted

@@ -1,0 +1,13 @@
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: httpd
+  namespace: application-sample
+data:
+  proxy-artifactory.conf: |
+{{ lookup('file', 'conf/proxy-artifactory.conf') | indent(4, true) }}
+  proxy-sample.conf: |
+{{ lookup('file', 'conf/proxy-sample.conf') | indent(4, true) }}
+

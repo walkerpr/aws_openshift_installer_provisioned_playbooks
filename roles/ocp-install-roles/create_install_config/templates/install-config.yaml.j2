@@ -1,0 +1,26 @@
+---
+
+apiVersion: v1
+baseDomain: {{ cluster_domain }}
+compute:
+- hyperthreading: Enabled
+  name: worker
+  replicas: 0
+controlPlane:
+  hyperthreading: Enabled
+  name: master
+  replicas: 3
+metadata:
+  name: {{ deployment_number }}
+networking:
+  clusterNetwork:
+  - cidr: 10.128.0.0/16
+    hostPrefix: 24
+  networkType: OpenShiftSDN
+  serviceNetwork:
+  - 172.30.0.0/16
+platform:
+  none: {}
+fips: {{ fips_mode | lower }}
+pullSecret: '{{ pull_secret }}'
+sshKey: '{{ ssh_key }}'

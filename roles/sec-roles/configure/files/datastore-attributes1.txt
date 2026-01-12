@@ -1,0 +1,12 @@
+sun-idrepo-ldapv3-config-user-objectclass=person
+sun-idrepo-ldapv3-config-user-objectclass=sunIdentityServerLibertyPPService
+sun-idrepo-ldapv3-config-user-objectclass=inetorgperson
+sun-idrepo-ldapv3-config-user-objectclass=sunFederationManagerDataStore
+sun-idrepo-ldapv3-config-user-objectclass=iPlanetPreferences
+sun-idrepo-ldapv3-config-user-objectclass=iplanet-am-auth-configuration-service
+sun-idrepo-ldapv3-config-user-objectclass=organizationalperson
+sun-idrepo-ldapv3-config-user-objectclass=sunFMSAML2NameIdentifier
+sun-idrepo-ldapv3-config-user-objectclass=inetuser
+sun-idrepo-ldapv3-config-user-objectclass=iplanet-am-user-service
+sun-idrepo-ldapv3-config-user-objectclass=top
+

@@ -1,0 +1,20 @@
+---
+
+- name: Create persistent volume for image registy
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: PersistentVolume
+      metadata:
+        name: image-registry-pv
+      spec:
+        accessModes:
+          - ReadWriteMany
+        capacity:
+          storage: 100Gi
+        nfs:
+          path: "/mnt/nfs/deployment{{ deployment_number }}/registry"
+          server: "nfs.dev.sample.dev"
+        persistentVolumeReclaimPolicy: Retain
+        storageClassName: registry
+    state: present

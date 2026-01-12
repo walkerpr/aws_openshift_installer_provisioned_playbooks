@@ -1,0 +1,7 @@
+---
+- import_playbook: install-dependencies.yml
+- import_playbook: create-install-config.yml
+- import_playbook: create-roles.yml
+- import_playbook: create-manifests.yml
+- import_playbook: install-openshift.yml
+- import_playbook: set-kube.yml

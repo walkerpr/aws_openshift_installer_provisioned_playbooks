@@ -1,0 +1,10 @@
+---
+
+- name: Create Openshift Distributed Tracing namespace
+  k8s:
+    definition:
+      apiVersion: project.openshift.io/v1
+      kind: project
+      metadata:
+        name: openshift-distributed-tracing
+    state: present

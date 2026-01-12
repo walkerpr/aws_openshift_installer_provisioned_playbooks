@@ -1,0 +1,11 @@
+---
+
+master_ignition_path: "{{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster/master.ign"
+
+worker_ignition_path: "{{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster/worker.ign"
+
+resolv_conf_file:         "{{ lookup('template', 'resolv.conf.j2', rstrip=false) }}"
+
+lock_resolv_conf_sh_file: "{{ lookup('file', 'lock-resolv-conf.sh', rstrip=false) }}"
+
+set_hostname_sh_file:     "{{ lookup('file', 'set-hostname.sh', rstrip=false) }}"

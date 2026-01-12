@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<EntityConfig
+  entityID="/{{ application_realm }}/{{ application_idp }}"
+  hosted="true"
+  xmlns="urn:sun:fm:SAML:2.0:entityconfig"
+  xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+  xmlns:xenc="http://www.w3.org/2001/04/xmlenc#"
+  xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
+  xmlns:ns5="urn:oasis:names:tc:SAML:2.0:metadata"
+  xmlns:x509qry="urn:oasis:names:tc:SAML:metadata:X509:query"
+  xmlns:query="urn:oasis:names:tc:SAML:metadata:ext:query"
+  xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
+  <IDPSSOConfig metaAlias="/{{ application_realm }}/{{ application_idp }}">
+    <Attribute name="assertionEffectiveTime">
+      <Value>600</Value>
+    </Attribute>
+    <Attribute name="appLogoutUrl"/>
+    <Attribute name="wantLogoutResponseSigned">
+      <Value>false</Value>
+    </Attribute>
+    <Attribute name="idpECPSessionMapper">
+      <Value>com.sun.identity.saml2.plugins.DefaultIDPECPSessionMapper</Value>
+    </Attribute>
+    <Attribute name="RpUrl"/>
+    <Attribute name="idpAccountMapper">
+      <Value>com.sun.identity.saml2.plugins.DefaultIDPAccountMapper</Value>
+    </Attribute>
+    <Attribute name="attributeMap">
+      <Value>cn=cn</Value>
+      <Value>memberOf=memberOf</Value>
+      <Value>uid=uid</Value>
+      <Value>mail=mail</Value>
+      <Value>sn=sn</Value>
+    </Attribute>
+    <Attribute name="discoveryBootstrappingEnabled">
+      <Value>false</Value>
+    </Attribute>
+    <Attribute name="nameIDFormatMap">
+      <Value>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress=mail</Value>
+      <Value>urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName=</Value>
+      <Value>urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName=</Value>
+      <Value>urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos=</Value>
+      <Value>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=</Value>
+      <Value>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=cn</Value>
+    </Attribute>
+    <Attribute name="proxyIDPFinderJSP"/>
+    <Attribute name="autofedAttribute">
+      <Value></Value>
+    </Attribute>
+    <Attribute name="wantMNIResponseSigned">
+      <Value>false</Value>
+    </Attribute>
+    <Attribute name="idpAuthncontextClassrefMapping">
+      <Value>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport|0||default</Value>
+    </Attribute>
+    <Attribute name="wantLogoutRequestSigned">
+      <Value>false</Value>
+    </Attribute>
+    <Attribute name="metaAlias"/>
+    <Attribute name="proxyIDPFinderClass"/>
+    <Attribute name="saeAppSecretList"/>
+    <Attribute name="idpAdapter"/>
+    <Attribute name="signingCertKeyPass"/>
+    <Attribute name="idpAuthncontextMapper">
+      <Value>com.sun.identity.saml2.plugins.DefaultIDPAuthnContextMapper</Value>
+    </Attribute>
+    <Attribute name="basicAuthOn">
+      <Value>false</Value>
+    </Attribute>
+    <Attribute name="wantNameIDEncrypted">
+      <Value>false</Value>
+    </Attribute>
+    <Attribute name="idpSessionSyncEnabled">
+      <Value>false</Value>
+    </Attribute>
+    <Attribute name="wantMNIRequestSigned">
+      <Value>false</Value>
+    </Attribute>
+    <Attribute name="basicAuthUser"/>
+    <Attribute name="idpDisableNameIDPersistence">
+      <Value>false</Value>
+    </Attribute>
+    <Attribute name="basicAuthPassword"/>
+    <Attribute name="wantArtifactResolveSigned">
+      <Value>false</Value>
+    </Attribute>
+    <Attribute name="AuthUrl"/>
+    <Attribute name="saeIDPUrl">
+      <Value>{{ am_url }}/idpsaehandler/metaAlias/{{ application_realm }}/{{ application_idp }}</Value>
+    </Attribute>
+    <Attribute name="assertionCacheEnabled">
+      <Value>false</Value>
+    </Attribute>
+    <Attribute name="cotlist">
+      <Value>{{ application_cot }}</Value>
+    </Attribute>
+    <Attribute name="assertionNotBeforeTimeSkew">
+      <Value>600</Value>
+    </Attribute>
+    <Attribute name="encryptionCertAlias"/>
+    <Attribute name="idpAttributeMapper"/>
+    <Attribute name="enableProxyIDPFinderForAllSPs"/>
+    <Attribute name="signingCertAlias">
+      <Value>{{ cert_alias }}</Value>
+    </Attribute>
+    <Attribute name="relayStateUrlList"/>
+    <Attribute name="autofedEnabled">
+      <Value>false</Value>
+    </Attribute>
+  </IDPSSOConfig>
+</EntityConfig>

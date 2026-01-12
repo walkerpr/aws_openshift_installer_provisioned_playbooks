@@ -1,0 +1,8 @@
+---
+
+- import_tasks: create-directories.yml
+
+- import_tasks: generate-cert.yml
+
+- import_tasks: build-ca-bundle.yml
+

@@ -1,0 +1,10 @@
+---
+
+- name: Create installmanager database service
+  k8s:
+    definition: "{{ lookup('template', installmanagerdb_service_manifest) }}"
+
+- name: Create installmanager service
+  k8s:
+    definition: "{{ lookup('template', installmanager_service_manifest) }}"
+

@@ -1,0 +1,50 @@
+---
+- name: Get the current caller identity information
+  amazon.aws.aws_caller_info:
+  register: caller_info
+
+- name: Create kubeconfig directory
+  file:
+    path: "~/.kube"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode:  0755
+
+- name: Create kubeconfig directory
+  file:
+    path: "/root/.kube"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode:  0755
+  become: true
+
+- name: Copy kubeconfig auth file
+  copy:
+    src:  "{{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster/auth/kubeconfig"
+    dest: "~/.kube/deployment{{ deployment_number }}-ocp.conf"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+- name: Store kubeadm password file as variable
+  slurp:
+    src: "{{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster/auth/kubeadmin-password"
+  register: kubeadmin_password
+
+
+- name: Create a parameter for the kubeadmin password
+  community.aws.ssm_parameter:
+    name: "/sample/deployment{{ deployment_number }}/kubeadmin/password"
+    description: "Temporary password for new Workspace users"
+    string_type: "SecureString"
+    value: "{{ kubeadmin_password['content'] | b64decode }}"
+    overwrite_value: "always"
+
+- name: Upload Kubeconfig to S3
+  amazon.aws.s3_object:
+    bucket: "sample-{{ caller_info.account }}-openshift"
+    object: "/deployment{{ deployment_number }}/kube/config"
+    src: "{{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster/auth/kubeconfig"
+    mode: put
+    overwrite: always

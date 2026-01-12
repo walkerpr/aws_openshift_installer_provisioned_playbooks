@@ -1,0 +1,6 @@
+---
+
+- import_tasks: clean-resources.yml
+
+- import_tasks: clean-files.yml
+

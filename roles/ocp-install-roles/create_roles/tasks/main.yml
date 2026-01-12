@@ -1,0 +1,58 @@
+---
+
+- name: Get the current caller identity information
+  amazon.aws.aws_caller_info:
+  register: caller_info
+
+- name: Delete existing resources
+  command: >
+   ccoctl aws delete --name {{ caller_info.account }}-dep{{ deployment_number }} --region=us-gov-west-1
+
+- name: Remove ccoctl directory
+  file:
+    path: "{{ config_dir }}/deployment{{ deployment_number }}/ocp/ccoctl"
+    state: absent
+
+- name: Create ccoctl directory
+  file:
+    path: "{{ config_dir }}/deployment{{ deployment_number }}/ocp/ccoctl"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode:  0755
+
+- name: Generate credential requests
+  command: >
+   /home/{{ ansible_user }}/.local/bin/oc adm release extract --credentials-requests --cloud=aws  --from=quay.io/openshift-release-dev/ocp-release:{{ openshift_major_version }}.{{ openshift_minor_version }}.{{ openshift_patch_version }}-x86_64 --to={{ config_dir }}/deployment{{ deployment_number }}/ocp/ccoctl/credrequests
+  become: true
+
+- name: Recursively change ownership of a directory
+  file:
+    path: "{{ config_dir }}/deployment{{ deployment_number }}/ocp/ccoctl/credrequests"
+    state: directory
+    recurse: yes
+    owner: "{{ ansible_user }}"
+  become: true
+
+- name: Add credential request for EFS
+  template:
+    src: "openshift-cluster-csi-drivers-aws-efs-cloud-credentials-credentials.yaml.j2"
+    dest: "{{ config_dir }}/deployment{{ deployment_number }}/ocp/ccoctl/credrequests/openshift-cluster-csi-drivers-aws-efs-cloud-credentials-credentials.yaml"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode:  0600
+
+
+- name: Generate all
+  command: >
+   ccoctl aws create-all --name={{ caller_info.account }}-dep{{ deployment_number }} --region=us-gov-west-1 --credentials-requests-dir={{ config_dir }}/deployment{{ deployment_number }}/ocp/ccoctl/credrequests --output-dir={{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster
+  args:
+    chdir: "{{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster/"
+
+
+- name: Copy tls
+  copy:
+    src:  "{{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster/tls/"
+    dest: "{{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster/"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"

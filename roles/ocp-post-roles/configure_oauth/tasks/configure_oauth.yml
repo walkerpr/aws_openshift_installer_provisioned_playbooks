@@ -1,0 +1,19 @@
+---
+
+- name: Create HTPasswd CR identity provider
+  k8s:
+    definition:
+      apiVersion: config.openshift.io/v1
+      kind: OAuth
+      metadata:
+        name: cluster
+      spec:
+        identityProviders:
+        - name: htpasswd_provider
+          mappingMethod: claim
+          login: true 
+          type: HTPasswd
+          htpasswd:
+            fileData:
+              name: htpass-secret
+    apply: yes

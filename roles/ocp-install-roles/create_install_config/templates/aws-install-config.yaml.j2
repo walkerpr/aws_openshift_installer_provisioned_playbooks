@@ -1,0 +1,51 @@
+apiVersion: v1
+baseDomain: ocp.{{ cluster_domain }}
+credentialsMode: Manual
+compute:
+- hyperthreading: Enabled
+  name: worker
+  replicas: 2
+  platform:
+    aws:
+      type: {{ instance_type }}
+controlPlane:
+  hyperthreading: Enabled
+  name: master
+  replicas: 3
+  platform:
+    aws:
+      type: {{ instance_type }}
+metadata:
+  name: {{ deployment_number }}
+networking:
+  machineNetwork:
+    - cidr: {{ subnet_info_0.subnets[0].cidr_block }}
+    - cidr: {{ subnet_info_1.subnets[0].cidr_block }}
+platform:
+  aws:
+    region: us-gov-west-1
+    subnets:
+        - {{ subnet_info_0.subnets[0].id }}
+        - {{ subnet_info_1.subnets[0].id }}
+    propagateUserTags: true
+    userTags:
+      aaDeploymentNumber: {{ deployment_number }}
+      deploymentType: aaDeployment
+      ec2DailyStart: true
+      ec2DailyStop: true
+    hostedZone: {{ matching_zone }}
+    serviceEndpoints:
+      - name: ec2
+        url: "https://{{ ec2_endpoint.vpc_endpoints[0].dns_entries[0].dns_name }}"
+      - name: iam
+        url: "https://{{ iam_endpoint.vpc_endpoints[0].dns_entries[0].dns_name }}"
+      - name: elasticloadbalancing
+        url: "https://{{ elb_endpoint.vpc_endpoints[0].dns_entries[0].dns_name }}"
+    lbType: NLB
+publish: Internal
+fips: {{ fips_mode | lower }}
+pullSecret: '{{ pull_secret }}'
+sshKey: '{{ ssh_key.stdout }}'
+additionalTrustBundlePolicy: {{ trust_policy }}
+additionalTrustBundle: |
+{{ trusted_certs | indent( width=2, first=True) }}

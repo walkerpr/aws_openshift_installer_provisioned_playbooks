@@ -1,0 +1,5 @@
+---
+
+- name: Add cluster admin role binding to sample user
+  command:
+    cmd: "oc adm policy add-cluster-role-to-user cluster-admin sample"

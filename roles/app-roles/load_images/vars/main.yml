@@ -1,0 +1,13 @@
+---
+
+image_list:
+  - artifactory
+  - beats
+  - dil-services
+  - httpd
+  - installmanager
+  - logstash
+  - marketplace
+  - owf
+  - postgres
+

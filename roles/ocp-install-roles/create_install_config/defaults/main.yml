@@ -1,0 +1,11 @@
+---
+
+ocp_platform: aws
+
+fips_mode: true
+
+cluster_domain: "dev.dev.sample.dev"
+
+trust_policy: Always
+
+instance_type: t3.xlarge

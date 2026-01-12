@@ -1,0 +1,136 @@
+---
+
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+    version: {{ sample_version }}
+  labels:
+    app: owf
+  name: owf
+  namespace: application-sample
+spec:
+  replicas: 1
+  selector:
+    app: owf
+    deploymentconfig: owf
+  strategy:
+    type: Rolling
+    rollingParams:
+      updatePeriodSeconds: 1
+      intervalSeconds: 1
+      timeoutSeconds: 600
+  template:
+    metadata:
+      labels:
+        app: owf
+        deploymentconfig: owf
+    spec:
+      containers:
+        - env:
+            - name: new_truststore_password
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: newtruststorepassword
+            - name: sp_key_password
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: spkeypassword
+            - name: artpass
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: artpass
+            - name: DBPASS
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: dbpass
+            - name: new_keystore_password
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: newkeystorepassword
+            - name: key_password
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: keypassword
+            - name: keystore_password
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: keystorepassword
+          envFrom:
+            - configMapRef:
+                name: sampleproperties
+          image: >-
+            {{ pull_repository }}/owf:{{ sample_version }}
+          imagePullPolicy: Always
+          livenessProbe:
+            exec:
+              command:
+                - /opt/applicationsample/healthcheck.sh
+            initialDelaySeconds: 1200
+            periodSeconds: 20
+            timeoutSeconds: 5
+          name: owf
+          ports:
+            - containerPort: 8009
+              protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+                - /opt/applicationsample/healthcheck.sh
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 57
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /usr/share/tomcat/logs
+              name: volume-data
+              subPath: owf/tomcat7/logs
+            - mountPath: /opt/applicationsample/certs/server
+              name: volume-owfcerts
+            - mountPath: /opt/applicationsample/tmp
+              name: owf-tmp
+            - mountPath: /usr/share/tomcat/tmp
+              name: owf-tomcat-tmp
+            - mountPath: /usr/share/tomcat/webapps/owf/tmp
+              name: owf-banner
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        supplementalGroups: [ 65534 ]
+      serviceAccount: sample-sa
+      serviceAccountName: sample-sa
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: volume-data
+          persistentVolumeClaim:
+            claimName: data
+        - configMap:
+            defaultMode: 420
+            items:
+              - key: cabundle.crt.tmp
+                path: cabundle.crt.tmp
+              - key: idp.crt
+                path: {{ idp_alias }}.crt
+              - key: server_private_key
+                path: {{ server_alias }}.key
+              - key: server_certificate
+                path: {{ server_alias }}.crt
+            name: certificates
+          name: volume-owfcerts
+        - emptyDir: {}
+          name: owf-tmp
+        - emptyDir: {}
+          name: owf-tomcat-tmp
+        - emptyDir: {}
+          name: owf-banner

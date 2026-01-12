@@ -1,0 +1,149 @@
+---
+
+- name: Recursively change ownership of a directory
+  become: true
+  file:
+    path: /opt
+    state: directory
+    recurse: yes
+    owner: "{{ ansible_user }}"
+
+- name: create aws dir
+  file:
+    path: "~/.aws/"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode:  0755
+
+- name: Create config file for AWS
+  template:
+    src:  aws_config.yaml.j2
+    dest: "~/.aws/config"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode:  0640
+
+- name: Install boto3
+  pip:
+    name: boto3
+
+- name: Install botocore
+  pip:
+    name: botocore
+
+- name: Pip install kubernetes
+  pip:
+    name: kubernetes
+    
+- name: Install aws ansible plugin
+  command: >
+    ansible-galaxy collection install amazon.aws
+
+- name: Unarchive openshift-client
+  unarchive:
+    src: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{ openshift_major_version }}.{{ openshift_minor_version }}.{{ openshift_patch_version }}/openshift-client-linux.tar.gz
+    dest: ~/.local/bin/
+    remote_src: yes
+
+- name: Unarchive openshift-install
+  unarchive:
+    src: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{ openshift_major_version }}.{{ openshift_minor_version }}.{{ openshift_patch_version }}/openshift-install-linux.tar.gz
+    dest: ~/.local/bin/
+    remote_src: yes
+
+- name: Unarchive helm
+  unarchive:
+    src: https://get.helm.sh/helm-v3.18.4-linux-amd64.tar.gz
+    dest: ~/.local/bin/
+    remote_src: yes
+
+- name: Move helm to correct directory.
+  copy:
+    src:  "~/.local/bin/linux-amd64/helm"
+    dest: "~/.local/bin/helm"
+    mode:  777
+
+- name: Remove existing helm symlink
+  file:
+    path: "/usr/bin/helm"
+    state: absent
+  become: true
+
+- name: Create link for oc
+  file:
+    src: /home/{{ ansible_user }}/.local/bin/helm
+    dest: /usr/bin/helm
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    state: link
+  become: true
+
+- name: Remove existing oc symlink
+  file:
+    path: "/usr/bin/oc"
+    state: absent
+  become: true
+
+- name: Create link for oc
+  file:
+    src: /home/{{ ansible_user }}/.local/bin/oc
+    dest: /usr/bin/oc
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    state: link
+  become: true
+
+- name: Remove existing kubectl symlink
+  file:
+    path: "/usr/bin/kubectl"
+    state: absent
+  become: true
+
+- name: Create link for oc
+  file:
+    src: /home/{{ ansible_user }}/.local/bin/kubectl
+    dest: /usr/bin/kubectl
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    state: link
+  become: true
+
+- name: Create pull secret file for ccoctl
+  template:
+    src:  pull-secret.yaml.j2
+    dest: "~/.pull-secret"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode:  0640
+
+- name: Remove existing ccoctl
+  file:
+    path: "~/.local/bin/ccoctl"
+    state: absent
+
+- name: Remove existing ccoctl
+  file:
+    path: "~/.local/bin/ccoctl.rhel9"
+    state: absent
+
+- name: Install ccoctl
+  shell: >
+    . ~/.bashrc &&
+    export RELEASE_IMAGE=$(openshift-install version | awk '/release image/ {print $3}') &&
+    export CCO_IMAGE=$(oc adm release info --image-for='cloud-credential-operator' $RELEASE_IMAGE -a ~/.pull-secret) &&
+    oc image extract $CCO_IMAGE --file="/usr/bin/ccoctl" -a ~/.pull-secret &&
+    . ~/.bashrc
+  args:
+    chdir: ~/.local/bin/
+
+# - name: Create symbolic link for entity-providers directory
+#   file:
+#     src:  ~/.local/bin/ccoctl.rhel9
+#     dest: ~/.local/bin/ccoctl
+#     state: link
+
+- name: Make ccoctl executable
+  file:
+    path: ~/.local/bin/ccoctl
+    mode: '0775'

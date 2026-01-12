@@ -1,0 +1,54 @@
+---
+
+# - name: Generate initialize.ign file
+#   template:
+#     src: initialize.ign.j2
+#     dest: "{{ config_dir }}/deployment{{ deployment_number }}/ocp/initialize.ign"
+#     owner: "{{ ansible_user }}"
+#     group: "{{ ansible_user }}"
+#     mode:  0644
+
+# - name: Generate merge-bootstrap.ign file
+#   template:
+#     src: merge-bootstrap.ign.j2
+#     dest: "{{ config_dir }}/deployment{{ deployment_number }}/ocp/merge-bootstrap.ign"
+#     owner: "{{ ansible_user }}"
+#     group: "{{ ansible_user }}"
+#     mode:  0644
+
+- name: Generate ignition configs
+  command: >
+    openshift-install create ignition-configs --dir={{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster
+  become_user: "{{ ansible_user }}"
+
+# - name: Get master.ign contents
+#   set_fact:
+#     master_ign: "{{ lookup('file', master_ignition_path, rstrip=false) }}"
+
+# - name: Extract CA data
+#   set_fact:
+#     ca_source: "{{ master_ign.ignition.security.tls.certificateAuthorities[0].source }}"
+
+# - name: Generate merge-master.ign file
+#   template:
+#     src: merge-master.ign.j2
+#     dest: "{{ config_dir }}/deployment{{ deployment_number }}/ocp/merge-master.ign"
+#     owner: "{{ ansible_user }}"
+#     group: "{{ ansible_user }}"
+#     mode:  0644
+
+# - name: Get worker.ign contents
+#   set_fact:
+#     worker_ign: "{{ lookup('file', worker_ignition_path, rstrip=false) }}"
+
+# - name: Extract CA data
+#   set_fact:
+#     ca_source: "{{ worker_ign.ignition.security.tls.certificateAuthorities[0].source }}"
+
+# - name: Generate merge-worker.ign file
+#   template:
+#     src: merge-worker.ign.j2
+#     dest: "{{ config_dir }}/deployment{{ deployment_number }}/ocp/merge-worker.ign"
+#     owner: "{{ ansible_user }}"
+#     group: "{{ ansible_user }}"
+#     mode:  0644

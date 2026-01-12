@@ -1,0 +1,10 @@
+{
+  "auths": {
+    "{{ ocp_registry_endpoint }}": {
+      "username": "{{ vault_ocp_registry_username }}",
+      "password": "{{ vault_ocp_registry_password }}",
+      "auth": "{{ (vault_ocp_registry_username + ':' + vault_ocp_registry_password) | b64encode }}"
+    }
+  }
+}
+

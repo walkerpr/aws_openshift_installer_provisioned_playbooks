@@ -1,0 +1,7 @@
+---
+
+application_name: application_example
+
+application_owf_admin_group: ADMIN
+
+application_owf_extern_admin_group: EXTERN_ADMIN

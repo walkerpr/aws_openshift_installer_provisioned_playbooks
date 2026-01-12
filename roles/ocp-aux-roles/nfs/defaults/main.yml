@@ -1,0 +1,24 @@
+# Specifyies a list of volume names and sizes for nfs shares and pvs
+ocp4_nfs_volumes:
+  - name: share1
+    size: 1Gi
+  - name: share2
+    size: 1Gi
+  - name: share3
+    size: 1Gi
+  - name: share4
+    size: 1Gi
+  - name: share5
+    size: 1Gi
+  - name: share6
+    size: 5Gi
+  - name: share7
+    size: 5Gi
+  - name: share8
+    size: 5Gi
+  - name: share9
+    size: 5Gi
+  - name: share10
+    size: 10Gi
+  - name: share11
+    size: 250Gi

@@ -1,0 +1,15 @@
+---
+
+- import_playbook: core/common.yml
+
+- import_playbook: core/firewall.yml
+
+- import_playbook: ocp-aux/web-server/web-server.yml
+
+- import_playbook: core/dns-supersede.yml
+
+- import_playbook: ocp-aux/api-int-lb/api-int-lb.yml
+
+- import_playbook: ocp-aux/api-lb/api-ext-lb.yml
+
+- import_playbook: ocp-aux/ingress-lb/ingress-lb.yml

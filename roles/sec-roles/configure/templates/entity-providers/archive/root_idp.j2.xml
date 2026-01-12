@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<EntityDescriptor
+  entityID="/{{ application_idp }}"
+  xmlns="urn:oasis:names:tc:SAML:2.0:metadata">
+  <IDPSSODescriptor
+    WantAuthnRequestsSigned="false"
+    protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <KeyDescriptor use="signing">
+      <KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+        <X509Data>
+          <X509Certificate>
+{{ am_cert_body }}
+          </X509Certificate>
+        </X509Data>
+      </KeyInfo>
+    </KeyDescriptor>
+    <ArtifactResolutionService
+      Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP"
+      Location="{{ sso_url }}/{{ am_deployment_endpoint }}/ArtifactResolver/metaAlias/{{ application_idp }}"
+      index="0"
+      isDefault="1"/>
+    <SingleLogoutService
+      Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+      Location="{{ sso_url }}/{{ am_deployment_endpoint }}/IDPSloRedirect/metaAlias/{{ application_idp }}"
+      ResponseLocation="{{ sso_url }}/{{ am_deployment_endpoint }}/IDPSloRedirect/metaAlias/{{ application_idp }}"/>
+    <SingleLogoutService
+      Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+      Location="{{ sso_url }}/{{ am_deployment_endpoint }}/IDPSloPOST/metaAlias/{{ application_idp }}"
+      ResponseLocation="{{ sso_url }}/{{ am_deployment_endpoint }}/IDPSloPOST/metaAlias/{{ application_idp }}"/>
+    <SingleLogoutService
+      Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP"
+      Location="{{ sso_url }}/{{ am_deployment_endpoint }}/IDPSloSoap/metaAlias/{{ application_idp }}"/>
+    <ManageNameIDService
+      Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+      Location="{{ sso_url }}/{{ am_deployment_endpoint }}/IDPMniRedirect/metaAlias/{{ application_idp }}"
+      ResponseLocation="{{ sso_url }}/{{ am_deployment_endpoint }}/IDPMniRedirect/metaAlias/{{ application_idp }}"/>
+    <ManageNameIDService
+      Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+      Location="{{ sso_url }}/{{ am_deployment_endpoint }}/IDPMniPOST/metaAlias/{{ application_idp }}"
+      ResponseLocation="http://localhost:8080/{{ am_deployment_endpoint }}/IDPMniPOST/metaAlias/{{ application_idp }}"/>
+    <ManageNameIDService
+      Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP"
+      Location="{{ sso_url }}/{{ am_deployment_endpoint }}/IDPMniSoap/metaAlias/{{ application_idp }}"/>
+    <NameIDFormat>
+      urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+    </NameIDFormat>
+    <NameIDFormat>
+      urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+    </NameIDFormat>
+    <NameIDFormat>
+      urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+    </NameIDFormat>
+    <NameIDFormat>
+      urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
+    </NameIDFormat>
+    <NameIDFormat>
+      urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName
+    </NameIDFormat>
+    <NameIDFormat>
+      urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos
+    </NameIDFormat>
+    <NameIDFormat>
+      urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
+    </NameIDFormat>
+    <SingleSignOnService
+      Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+      Location="{{ sso_url }}/{{ am_deployment_endpoint }}/SSORedirect/metaAlias/{{ application_idp }}"/>
+    <SingleSignOnService
+      Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+      Location="{{ sso_url }}/{{ am_deployment_endpoint }}/SSOPOST/metaAlias/{{ application_idp }}"/>
+    <SingleSignOnService
+      Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP"
+      Location="{{ sso_url }}/{{ am_deployment_endpoint }}/SSOSoap/metaAlias/{{ application_idp }}"/>
+    <NameIDMappingService
+      Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP"
+      Location="{{ sso_url }}/{{ am_deployment_endpoint }}/NIMSoap/metaAlias/{{ application_idp }}"/>
+    <AssertionIDRequestService
+      Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP"
+      Location="{{ sso_url }}/{{ am_deployment_endpoint }}/AIDReqSoap/IDPRole/metaAlias/{{ application_idp }}"/>
+    <AssertionIDRequestService
+      Binding="urn:oasis:names:tc:SAML:2.0:bindings:URI"
+      Location="{{ sso_url }}/{{ am_deployment_endpoint }}/AIDReqUri/IDPRole/metaAlias/{{ application_idp }}"/>
+  </IDPSSODescriptor>
+</EntityDescriptor>

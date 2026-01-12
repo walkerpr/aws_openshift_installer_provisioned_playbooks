@@ -1,0 +1,15 @@
+---
+
+- name: Configure Classification Banner
+  k8s:
+    definition:
+      apiVersion: console.openshift.io/v1
+      kind: ConsoleNotification
+      metadata:
+        name: classification-banner-top
+      spec:
+        backgroundColor: '#008000'
+        color: '#000000'
+        location: BannerTop
+        text: UNCLASSIFIED
+    apply: yes

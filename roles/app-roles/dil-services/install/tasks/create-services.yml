@@ -1,0 +1,6 @@
+---
+
+- name: Create dil-services service
+  k8s:
+    definition: "{{ lookup('template', dil_services_service_manifest) }}"
+

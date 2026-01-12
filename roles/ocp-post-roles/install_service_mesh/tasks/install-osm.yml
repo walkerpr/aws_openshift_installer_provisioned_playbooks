@@ -1,0 +1,35 @@
+---
+
+- name: Install openshift service mesh operator
+  k8s:
+    namespace: openshift-operators
+    definition:
+      apiVersion: operators.coreos.com/v1alpha1
+      kind: Subscription
+      metadata:
+        name: servicemeshoperator
+        namespace: openshift-operators
+      spec:
+        channel: "{{ subscription_channel }}"
+        installPlanApproval: "{{ subscription_approval }}"
+        name: servicemeshoperator
+        source: redhat-operators
+        sourceNamespace: openshift-marketplace
+    state: present
+
+- name: Ensure openshift service mesh operator pod is running
+  k8s_info:
+    kind: pod
+    namespace: openshift-operators
+    field_selectors:
+      - status.phase=Running
+    label_selectors:
+      - name=istio-operator
+  register: pod_result
+  until: pod_result.resources | default([]) | count > 0
+  delay: 30
+  retries: 20
+
+- name: Pause for 1 minute to allow service mesh operator to fully come up even after pod status is running
+  pause:
+    seconds: 60

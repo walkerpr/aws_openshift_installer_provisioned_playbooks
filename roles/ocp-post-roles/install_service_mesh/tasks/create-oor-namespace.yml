@@ -1,0 +1,10 @@
+---
+
+- name: Create Openshift Operators Redhat namespace
+  k8s:
+    definition:
+      apiVersion: project.openshift.io/v1
+      kind: project
+      metadata:
+        name: openshift-operators-redhat
+    state: present

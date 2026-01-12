@@ -1,0 +1,3 @@
+- name: Prune images
+  become: true
+  shell: podman image prune --force

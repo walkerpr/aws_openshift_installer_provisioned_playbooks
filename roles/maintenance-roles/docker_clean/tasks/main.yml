@@ -1,0 +1,6 @@
+---
+
+- name: Remove Docker Images
+  command: docker rmi "{{ item.name }}:{{ tag }}"
+  loop: "{{ docker_images_to_remove }}"
+  ignore_errors: true

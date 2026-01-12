@@ -1,0 +1,15 @@
+[all:vars]
+edge_type="ocp"
+ansible_ssh_private_key_file=~/.ssh/sample-central-services.key
+ansible_user=ec2-user
+is_aws_environment=True
+deployment_environment="dev"
+aws_region="us-gov-west-1"
+# Host Groups
+openshift_major_version="4"
+openshift_minor_version="12"
+openshift_patch_version="78"
+config_dir="/opt/application-sample"
+apps_base_domain = "apps.{{ deployment_number }}.ocp.{{ deployment_environment }}.dev.sample.dev"
+[nfs]
+nfs.dev.sample.dev

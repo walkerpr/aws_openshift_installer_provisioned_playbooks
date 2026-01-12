@@ -1,0 +1,44 @@
+---
+
+- name: Create operator group
+  k8s:
+    namespace: openshift-operators-redhat
+    definition:
+      apiVersion: operators.coreos.com/v1
+      kind: OperatorGroup
+      metadata:
+        name: elasticsearch-operator-group
+    state: present
+
+- name: Install openshift elasticsearch operator
+  k8s:
+    namespace: openshift-operators-redhat
+    definition:
+      apiVersion: operators.coreos.com/v1alpha1
+      kind: Subscription
+      metadata:
+        name: elasticsearch-operator
+        namespace: openshift-operators-redhat
+      spec:
+        channel: "{{ subscription_channel }}"
+        installPlanApproval: "{{ subscription_approval }}"
+        name: elasticsearch-operator
+        source: redhat-operators
+        sourceNamespace: openshift-marketplace
+        installModes:
+          - type: AllNamespaces
+            supported: true
+    state: present
+
+- name: Ensure openshift elasticsearch operator pod is running
+  k8s_info:
+    kind: pod
+    namespace: openshift-operators-redhat
+    field_selectors:
+      - status.phase=Running
+    label_selectors:
+      - name=elasticsearch-operator
+  register: pod_result
+  until: pod_result.resources | default([]) | count > 0
+  delay: 30
+  retries: 20

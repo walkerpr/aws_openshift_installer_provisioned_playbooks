@@ -1,0 +1,19 @@
+---
+
+- name: Create persistent volume claim for image registry
+  k8s:
+    definition:
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: image-registry-pvc
+        namespace: openshift-image-registry
+      spec:
+        accessModes:
+          - ReadWriteMany
+        volumeMode: Filesystem
+        storageClassName: registry
+        resources:
+          requests:
+            storage: 100Gi
+    state: present

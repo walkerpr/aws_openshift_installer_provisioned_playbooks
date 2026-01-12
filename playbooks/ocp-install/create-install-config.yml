@@ -1,0 +1,9 @@
+---
+
+- hosts: localhost
+  gather_facts: no
+  roles:
+    - ocp-install-roles/create_install_config
+  var_files:
+    - group_vars/secrets.yaml
+    - roles/ocp-install-roles/create_install_config/vars/main/aws-configuration.yaml

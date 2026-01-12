@@ -1,0 +1,10 @@
+---
+
+- name: Remove immutable attribute on resolve.conf
+  become: true
+  shell: chattr -i /etc/resolv.conf
+
+- name: Reload NetworkManager service
+  service:
+    name: NetworkManager
+    state: reloaded

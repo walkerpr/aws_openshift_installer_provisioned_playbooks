@@ -1,0 +1,19 @@
+---
+
+- import_playbook: create-htpasswd.yml
+
+- import_playbook: configure-oauth.yml
+
+- import_playbook: configure-classification-banner.yml
+
+- import_playbook: configure-storage.yml
+
+- import_playbook: configure-image-registry.yml
+
+- import_playbook: install-service-mesh.yml
+
+- import_playbook: configure-service-mesh.yml
+
+- import_playbook: configure-custom-webconsole-route.yml
+
+- import_playbook: add-graceful-shutdown.yml

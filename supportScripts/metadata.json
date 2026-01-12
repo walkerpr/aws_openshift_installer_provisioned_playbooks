@@ -1,0 +1,11 @@
+{
+"clusterName":"7",
+"clusterID":"",
+"infraID":"psjb9",
+"aws":{
+    "region":"us-gov-west-2",
+    "identifier":[
+        {"kubernetes.io/cluster/7-psjb9":"owned"}
+    ]
+}
+}

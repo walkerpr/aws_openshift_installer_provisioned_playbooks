@@ -1,0 +1,7 @@
+---
+
+# Registry and repository prefix where App sample images are stored
+pull_repository: "{{ ocp_registry_endpoint }}/application-sample"
+
+filebeat_deploymentconfig_manifest: "manifests/apps.openshift.io/deploymentconfig/filebeat.yml.j2"
+

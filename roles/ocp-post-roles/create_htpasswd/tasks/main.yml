@@ -1,0 +1,5 @@
+---
+
+- import_tasks: htpasswd.yml
+
+- import_tasks: create_user.yml

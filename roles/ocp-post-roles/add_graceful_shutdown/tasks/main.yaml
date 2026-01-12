@@ -1,0 +1,51 @@
+---
+- name: Get worker security group name
+  shell: grep 'aws_security_group\"' {{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster/terraform.cluster.tfstate -A15 | grep worker -A11 | tail -1 | awk -F\" '{print $4}'
+  register: worker_security_group_name
+
+- name: Get master security group name
+  shell: grep 'aws_security_group\"' {{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster/terraform.cluster.tfstate -A15 | grep master -A11 | tail -1 | awk -F\" '{print $4}'
+  register: master_security_group_name
+
+- name: Get central services cidr prefix
+  command: >
+    aws ssm get-parameter --name /sample/vpc/central-services/subnet/cidr/prefix --query Parameter.Value --with-decryption --output=text
+  register: subnet_prefix
+
+- name: Allow SSH from automation
+  amazon.aws.ec2_security_group:
+    name: "{{ worker_security_group_name.stdout }}"
+    description: "Worker security group"
+    rules:
+      - proto: tcp
+        ports: 22
+        ip_prefix: "{{ subnet_prefix.stdout }}"
+    purge_rules: false
+
+- name: Allow SSH from automation
+  amazon.aws.ec2_security_group:
+    name: "{{ master_security_group_name.stdout }}"
+    description: "Worker security group"
+    rules:
+      - proto: tcp
+        ports: 22
+        ip_prefix: "{{ subnet_prefix.stdout }}"
+    purge_rules: false
+
+- name: Set fact for SSH key
+  set_fact:
+     ansible_ssh_private_key_file: "~/.ssh/deployment-{{ deployment_number }}.key"
+
+- name: Get IPs of Nodes
+  shell: "kubectl describe nodes --kubeconfig=/home/ec2-user/.kube/deployment{{ deployment_number }}-ocp.conf | grep InternalIP: | awk {' print $2 '}"
+  register: cluster_ips
+
+- name: Add grace period configuration to kubelet.conf file.
+  shell: |
+    ssh -o "StrictHostKeyChecking no" -i {{ansible_ssh_private_key_file}} core@{{ item }} \
+    'sudo chown core /etc/kubernetes/kubelet.conf; \
+    echo "shutdownGracePeriodSeconds: 120" >> /etc/kubernetes/kubelet.conf; \
+    echo "shutdownGracePeriodCriticalPodsSeconds: 100" >> /etc/kubernetes/kubelet.conf; \
+    cat /etc/kubernetes/kubelet.conf; \
+    sudo chown root /etc/kubernetes/kubelet.conf'
+  loop: "{{ cluster_ips.stdout_lines }}"

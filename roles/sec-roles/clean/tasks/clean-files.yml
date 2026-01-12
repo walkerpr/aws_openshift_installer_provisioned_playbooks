@@ -1,0 +1,10 @@
+---
+
+- name: Remove sample files
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+  - "{{ sample_dir }}"
+  - "{{ keystore_dir }}/keystore.p12"
+

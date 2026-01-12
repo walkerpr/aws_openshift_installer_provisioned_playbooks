@@ -1,0 +1,9 @@
+---
+
+nfs_dir: "/mnt/nfs/deployment{{ deployment_number }}"
+
+nfs_options_shares: "rw,sync,no_root_squash,no_subtree_check,no_wdelay"
+
+nfs_options_shares_registry: "rw,sync,no_root_squash,no_subtree_check,no_wdelay,insecure"
+
+mount_options: "defaults"

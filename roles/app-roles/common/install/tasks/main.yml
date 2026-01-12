@@ -1,0 +1,12 @@
+---
+
+- import_tasks: create-project.yml
+
+- import_tasks: create-serviceaccounts.yml
+
+- import_tasks: create-pvc.yml
+
+- import_tasks: create-secrets.yml
+
+- import_tasks: create-configmaps.yml
+

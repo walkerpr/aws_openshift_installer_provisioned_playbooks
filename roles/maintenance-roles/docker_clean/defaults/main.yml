@@ -1,0 +1,28 @@
+---
+docker_images_to_remove:
+  - name: application-sample/appviewer
+  - name: application-sample/artifactory
+  - name: default-route-openshift-image-registry.apps.{{ host_environment }}.sample.sd.sample.sample.mil/application-sample/artifactory
+  - name: application-sample/artifactory-sidecar
+  - name: default-route-openshift-image-registry.apps.{{ host_environment }}.sample.sd.sample.sample.mil/application-sample/artifactory-sidecar
+  - name: application-sample/beats
+  - name: default-route-openshift-image-registry.apps.{{ host_environment }}.sample.sd.sample.sample.mil/application-sample/beats
+  - name: application-sample/cmmonitor
+  - name: default-route-openshift-image-registry.apps.{{ host_environment }}.sample.sd.sample.sample.mil/application-sample/cmmonitor
+  - name: application-sample/cm-service
+  - name: application-sample/dil-services
+  - name: default-route-openshift-image-registry.apps.{{ host_environment }}.sample.sd.sample.sample.mil/application-sample/dil-services
+  - name: application-sample/distributionfilter-api
+  - name: application-sample/elasticsearch
+  - name: application-sample/httpd
+  - name: default-route-openshift-image-registry.apps.{{ host_environment }}.sample.sd.sample.sample.mil/application-sample/httpd
+  - name: application-sample/installmanager
+  - name: default-route-openshift-image-registry.apps.{{ host_environment }}.sample.sd.sample.sample.mil/application-sample/installmanager
+  - name: application-sample/kibana
+  - name: application-sample/security-ldap
+  - name: application-sample/logstash
+  - name: default-route-openshift-image-registry.apps.{{ host_environment }}.sample.sd.sample.sample.mil/application-sample/logstash
+  - name: application-sample/security
+  - name: application-sample/postgres
+  - name: default-route-openshift-image-registry.apps.{{ host_environment }}.sample.sd.sample.sample.mil/application-sample/postgres
+  - name: application-sample/twinning

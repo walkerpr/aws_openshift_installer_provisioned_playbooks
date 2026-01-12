@@ -1,0 +1,70 @@
+# Application sample
+# OpenShift Container Platform (OCP) 4.x
+# HAProxy Load-balancer Configuration File
+
+# Configuration for OpenShift master external load-balancer
+
+#---------------------------------------------------------------------
+# Global settings
+#---------------------------------------------------------------------
+
+global
+    maxconn     20000
+    log         /dev/log local0 info
+    chroot      /var/lib/haproxy
+    pidfile     /var/run/haproxy.pid
+    user        haproxy
+    group       haproxy
+    daemon
+
+    # turn on stats unix socket
+    stats socket /var/lib/haproxy/stats
+
+#---------------------------------------------------------------------
+# Common defaults for 'listen' and 'backend' sections
+#---------------------------------------------------------------------
+
+defaults
+    mode                    http
+    log                     global
+    option                  httplog
+    option                  dontlognull
+#    option http-server-close
+    option forwardfor       except 127.0.0.0/8
+    option                  redispatch
+    retries                 3
+    timeout http-request    10s
+    timeout queue           1m
+    timeout connect         10s
+    timeout client          300s
+    timeout server          300s
+    timeout http-keep-alive 10s
+    timeout check           10s
+    maxconn                 20000
+
+#---------------------------------------------------------------------
+# HAProxy statistics
+#---------------------------------------------------------------------
+
+listen stats
+    bind :9000
+    mode http
+    stats enable
+    stats uri /
+
+#---------------------------------------------------------------------
+# OpenShift master load-balancing (external)
+#---------------------------------------------------------------------
+
+frontend api-server
+    bind *:{{ api_port }}
+    mode tcp
+    option tcplog
+    default_backend api-server
+
+backend api-server
+    balance source
+    mode tcp
+{% for n in range(ocp4_master_nodes | count) %}
+    server master{{ n + 1 }} {{ ocp4_master_nodes[n] }}.{{ apps_base_domain }}:{{ api_port }} check
+{% endfor %}

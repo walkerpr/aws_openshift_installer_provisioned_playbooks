@@ -1,0 +1,7 @@
+---
+
+- hosts: ingress_lb
+  gather_facts: no
+  roles:
+    - ocp-aux-roles/ingress_lb
+

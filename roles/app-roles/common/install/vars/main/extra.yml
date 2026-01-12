@@ -1,0 +1,48 @@
+---
+
+pki_subdir: "{{ lookup('first_found', pki_search_paths) | dirname | dirname }}"
+
+
+am_certificate_file: "{{ pki_subdir }}/server/{{ groups.am[0] }}.pem"
+
+
+sample_certificate_file: "{{ pki_subdir }}/other/{{ sample_fqdn }}.pem"
+
+sample_privatekey_file:  "{{ pki_subdir }}/other/{{ sample_fqdn }}.key"
+
+
+sample_ca_bundle_file:  "{{ pki_dir }}/sample/trust/sample-ca-bundle.pem"
+
+
+
+application_sample_project_manifest: "manifests/project.openshift.io/project/application-sample.yml.j2"
+
+common_serviceaccount_manifest: "manifests/core/serviceaccount/common.yml.j2"
+
+data_pvc_manifest: "manifests/core/pvc/data.yml.j2"
+
+common_secret_manifest: "manifests/core/secret/common.yml.j2"
+
+sampleproperties_configmap_manifest: "manifests/core/configmap/sampleproperties.yml.j2"
+
+certificates_configmap_manifest: "manifests/core/configmap/certificates.yml.j2"
+
+
+sample_standard_serviceaccount: "sample-sa"
+
+sample_management_serviceaccount: "installmanager"
+
+sa_prefix: "system:serviceaccount:application-sample"
+
+
+docker_config_snippet: "docker-config.json.j2"
+
+registry_credentials_manifest: "manifests/core/secret/registry-credentials.yml.j2"
+
+
+# Registered variable filters
+
+image_pull_secrets: "{{ sa_result.resources[0].imagePullSecrets | map(attribute='name') | list }}"
+
+subject_names: "{{ crb_result.resources | map(attribute='subjects') | flatten | map(attribute='name') | list }}"
+
