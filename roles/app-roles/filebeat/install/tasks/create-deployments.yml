@@ -1,6 +1,0 @@
----
-
-- name: Create filebeat deployment config
-  k8s:
-    definition: "{{ lookup('template', filebeat_deploymentconfig_manifest) }}"
-

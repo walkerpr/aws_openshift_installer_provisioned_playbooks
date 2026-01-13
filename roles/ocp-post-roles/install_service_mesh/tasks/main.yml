@@ -1,13 +1,19 @@
 ---
 
-- ansible.builtin.import_tasks: create-oor-namespace.yml
+- name: Import task.
+  import_tasks: create-oor-namespace.yml
 
-- ansible.builtin.import_tasks: create-odt-namespace.yml
+- name: Import task.
+  import_tasks: create-odt-namespace.yml
 
-- ansible.builtin.import_tasks: install-oeo.yml
+- name: Import task.
+  import_tasks: install-oeo.yml
 
-- ansible.builtin.import_tasks: install-jaeger.yml
+- name: Import task.
+  import_tasks: install-jaeger.yml
 
-- ansible.builtin.import_tasks: install-kiali.yml
+- name: Import task.
+  import_tasks: install-kiali.yml
 
-- ansible.builtin.import_tasks: install-osm.yml
+- name: Import task.
+  import_tasks: install-osm.yml

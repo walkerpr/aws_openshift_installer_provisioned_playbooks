@@ -1,6 +1,0 @@
----
-
-- name: Create dil-services deployment config
-  k8s:
-    definition: "{{ lookup('template', dil_services_deploymentconfig_manifest) }}"
-

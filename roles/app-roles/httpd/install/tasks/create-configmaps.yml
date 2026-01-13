@@ -1,6 +1,0 @@
----
-
-- name: Create httpd configmap
-  k8s:
-    definition: "{{ lookup('template', httpd_configmap_manifest) }}"
-

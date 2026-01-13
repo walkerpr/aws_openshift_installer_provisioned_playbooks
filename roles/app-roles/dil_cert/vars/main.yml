@@ -1,4 +1,0 @@
----
-
-pki_subdir: "{{ lookup('first_found', pki_search_paths) | dirname | dirname }}"
-

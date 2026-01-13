@@ -1,9 +1,0 @@
----
-
-- name: Install ansible collection community general
-  command:
-    cmd: "ansible-galaxy collection install community.general"
-
-- name: Install ansible collection posix
-  command:
-    cmd: "ansible-galaxy collection install ansible.posix"

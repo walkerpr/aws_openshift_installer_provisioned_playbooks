@@ -1,7 +1,0 @@
----
-
-- name: Create dil-services configmap
-  k8s:
-    definition: "{{ lookup('template', dil_services_configmap_manifest) }}"
-  no_log: true
-

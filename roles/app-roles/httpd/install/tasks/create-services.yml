@@ -1,6 +1,0 @@
----
-
-- name: Create httpd service
-  k8s:
-    definition: "{{ lookup('template', httpd_service_manifest) }}"
-

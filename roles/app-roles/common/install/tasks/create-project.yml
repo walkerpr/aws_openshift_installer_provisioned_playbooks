@@ -1,6 +1,0 @@
----
-
-- name: Create application-sample project
-  k8s:
-    definition: "{{ lookup('template', application_sample_project_manifest) }}"
-

@@ -1,11 +1,16 @@
 ---
 
-# - ansible.builtin.import_tasks: firewall.yml
+# - name: Import task.
+  import_tasks: firewall.yml
 
-- ansible.builtin.import_tasks: package.yml
+- name: Import task.
+  import_tasks: package.yml
 
-- ansible.builtin.import_tasks: nfs-dir.yml
+- name: Import task.
+  import_tasks: nfs-dir.yml
 
-- ansible.builtin.import_tasks: sub-dirs.yml
+- name: Import task.
+  import_tasks: sub-dirs.yml
 
-- ansible.builtin.import_tasks: configs.yml
+- name: Import task.
+  import_tasks: configs.yml

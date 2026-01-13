@@ -1,7 +1,0 @@
----
-
-- ansible.builtin.import_tasks: create-directories.yml
-
-- ansible.builtin.import_tasks: generate-cert.yml
-
-- ansible.builtin.import_tasks: build-ca-bundle.yml
