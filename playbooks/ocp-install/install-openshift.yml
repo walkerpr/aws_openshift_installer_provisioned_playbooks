@@ -1,6 +1,7 @@
 ---
 - hosts: localhost
   tasks:
-    - include_role:
+    - name: Install OpenShift.
+      include_role:
         name: ocp-install-roles/install_openshift
         tasks_from: install_openshift.yml

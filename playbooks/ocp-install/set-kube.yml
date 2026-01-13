@@ -1,6 +1,7 @@
 ---
 - hosts: localhost
   tasks:
-    - include_role:
+    - name: Setup Kubernetes.
+      include_role:
         name: ocp-install-roles/install_openshift
         tasks_from: set_kube.yml
