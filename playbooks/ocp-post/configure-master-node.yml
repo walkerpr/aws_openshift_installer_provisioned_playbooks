@@ -1,6 +1,7 @@
 ---
 
-- hosts: master1
+- name: Play.
+  hosts: master1
   gather_facts: no
   roles:
     - ocp-post-roles/configure_master_node

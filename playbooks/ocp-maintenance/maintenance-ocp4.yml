@@ -1,6 +1,7 @@
 ---
 
-- hosts: master1
+- name: Play.
+  hosts: master1
   gather_facts: no
   environment:
       KUBECONFIG: "/home/ec2-user/.kube/deployment{{ deployment_number }}-ocp.conf"

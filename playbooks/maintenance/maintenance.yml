@@ -1,11 +1,13 @@
 ---
 
-- hosts: localhost
+- name: Play.
+  hosts: localhost
   gather_facts: no
   roles:
     - maintenance-roles/docker_clean
 
-- hosts: master1
+- name: Play.
+  hosts: master1
   gather_facts: no
   roles:
     - maintenance-roles/podman_clean

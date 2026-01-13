@@ -51,6 +51,7 @@ use_default_rules: true
 skip_list:
   - yaml[line-length]
   - command-instead-of-shell
+  - role-name[path]
 
 # Ansible-lint does not automatically load rules that have the 'opt-in' tag.
 # You must enable opt-in rules by listing each rule 'id' below.

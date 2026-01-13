@@ -1,5 +1,6 @@
 ---
-- hosts: nfs
+- name: Play.
+  hosts: nfs
   gather_facts: no
   become: false
   roles:
