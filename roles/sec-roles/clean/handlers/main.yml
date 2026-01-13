@@ -1,7 +1,0 @@
----
-
-- name: Delete temporary password file
-  file:
-    path: "{{ pwd_file }}"
-    state: absent
-

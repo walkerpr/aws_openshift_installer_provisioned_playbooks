@@ -1,4 +1,6 @@
 ---
-- import_playbook: dependencies/dependencies.yml
+- name: Import Playbook.
+  import_playbook: dependencies/dependencies.yml
 
-- import_playbook: nfs/nfs.yml
+- name: Import Playbook.
+  import_playbook: nfs/nfs.yml

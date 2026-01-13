@@ -1,5 +1,0 @@
-sun-idrepo-ldapv3-config-createuser-attr-mapping=uid
-sun-idrepo-ldapv3-config-createuser-attr-mapping=cn
-sun-idrepo-ldapv3-config-createuser-attr-mapping=sn
-sun-idrepo-ldapv3-config-memberof=memberOf
-
