@@ -1,12 +1,11 @@
 ---
 
-- import_tasks: create-project.yml
+- ansible.builtin.import_tasks: create-project.yml
 
-- import_tasks: create-serviceaccounts.yml
+- ansible.builtin.import_tasks: create-serviceaccounts.yml
 
-- import_tasks: create-pvc.yml
+- ansible.builtin.import_tasks: create-pvc.yml
 
-- import_tasks: create-secrets.yml
+- ansible.builtin.import_tasks: create-secrets.yml
 
-- import_tasks: create-configmaps.yml
-
+- ansible.builtin.import_tasks: create-configmaps.yml

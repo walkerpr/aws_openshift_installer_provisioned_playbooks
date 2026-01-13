@@ -1,8 +1,7 @@
 ---
 
-- import_tasks: create-secrets.yml
+- ansible.builtin.import_tasks: create-secrets.yml
 
-- import_tasks: create-services.yml
+- ansible.builtin.import_tasks: create-services.yml
 
-- import_tasks: create-deployments.yml
-
+- ansible.builtin.import_tasks: create-deployments.yml

@@ -1,7 +1,7 @@
 ---
 
-# - import_tasks: create_image_registry_pv.yml
+# - ansible.builtin.import_tasks: create_image_registry_pv.yml
 
-- import_tasks: configure_image_registry_project.yml
+- ansible.builtin.import_tasks: configure_image_registry_project.yml
 
-- import_tasks: configure_permissions.yml
+- ansible.builtin.import_tasks: configure_permissions.yml

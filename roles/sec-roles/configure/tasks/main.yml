@@ -1,6 +1,5 @@
 ---
 
-- import_tasks: prepare-files.yml
+- ansible.builtin.import_tasks: prepare-files.yml
 
-- import_tasks: configure-am.yml
-
+- ansible.builtin.import_tasks: configure-am.yml

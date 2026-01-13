@@ -1,5 +1,5 @@
 ---
 
-- import_tasks: create_pacscan_user.yml
+- ansible.builtin.import_tasks: create_pacscan_user.yml
 
-- import_tasks: configure_resolve_conf.yml
+- ansible.builtin.import_tasks: configure_resolve_conf.yml

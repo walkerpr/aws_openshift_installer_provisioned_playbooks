@@ -1,4 +1,3 @@
 ---
 
-- import_tasks: create-deployments.yml
-
+- ansible.builtin.import_tasks: create-deployments.yml

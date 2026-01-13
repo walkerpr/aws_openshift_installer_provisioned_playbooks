@@ -6,4 +6,3 @@
 - name: Create artifactory configmap
   k8s:
     definition: "{{ lookup('template', artifactory_configmap_manifest) }}"
-

@@ -1,6 +1,5 @@
 ---
 
-- import_tasks: firewall.yml 
+- ansible.builtin.import_tasks: firewall.yml
 
-- import_tasks: install.yml 
-
+- ansible.builtin.import_tasks: install.yml

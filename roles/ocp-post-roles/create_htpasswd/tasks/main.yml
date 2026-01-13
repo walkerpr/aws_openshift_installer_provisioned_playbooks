@@ -1,5 +1,5 @@
 ---
 
-- import_tasks: htpasswd.yml
+- ansible.builtin.import_tasks: htpasswd.yml
 
-- import_tasks: create_user.yml
+- ansible.builtin.import_tasks: create_user.yml

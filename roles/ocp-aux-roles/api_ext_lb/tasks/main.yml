@@ -1,8 +1,7 @@
 ---
 
-- import_tasks: firewall.yml
+- ansible.builtin.import_tasks: firewall.yml
 
-- import_tasks: selinux.yml
+- ansible.builtin.import_tasks: selinux.yml
 
-- import_tasks: haproxy.yml
-
+- ansible.builtin.import_tasks: haproxy.yml

@@ -1,10 +1,9 @@
 ---
 
-- import_tasks: create-configmaps.yml
+- ansible.builtin.import_tasks: create-configmaps.yml
 
-- import_tasks: create-services.yml
+- ansible.builtin.import_tasks: create-services.yml
 
-- import_tasks: create-deployments.yml
+- ansible.builtin.import_tasks: create-deployments.yml
 
-- import_tasks: create-routes.yml
-
+- ansible.builtin.import_tasks: create-routes.yml

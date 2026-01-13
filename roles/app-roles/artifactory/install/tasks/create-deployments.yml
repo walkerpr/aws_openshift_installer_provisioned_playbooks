@@ -20,4 +20,3 @@
 - name: Create artifactory deployment config
   k8s:
     definition: "{{ lookup('template', artifactory_deploymentconfig_manifest) }}"
-

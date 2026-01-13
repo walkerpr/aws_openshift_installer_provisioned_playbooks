@@ -7,4 +7,3 @@
 - name: Create artifactory service
   k8s:
     definition: "{{ lookup('template', artifactory_service_manifest) }}"
-

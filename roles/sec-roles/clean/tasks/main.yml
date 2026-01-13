@@ -1,6 +1,5 @@
 ---
 
-- import_tasks: clean-resources.yml
+- ansible.builtin.import_tasks: clean-resources.yml
 
-- import_tasks: clean-files.yml
-
+- ansible.builtin.import_tasks: clean-files.yml
