@@ -1,6 +1,8 @@
 ---
-
 - name: Generate manifests
-  command: >
+  register: my_output
+  changed_when: my_output.rc != 0
+  ansible.builtin.command: >
     openshift-install create manifests --dir={{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster
   become_user: "{{ ansible_user }}"
+  become: false

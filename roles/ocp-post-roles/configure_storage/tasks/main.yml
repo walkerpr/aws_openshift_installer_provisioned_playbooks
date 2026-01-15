@@ -11,10 +11,8 @@
       "tag:Name": sample-deployment-{{ deployment_number }}-subnet-1
   register: subnet_info_1
 
-
-
 - name: Create operator group
-  k8s:
+  kubernetes.core.k8s:
     namespace: openshift-cluster-csi-drivers
     definition:
       apiVersion: operators.coreos.com/v1
@@ -24,7 +22,7 @@
     state: present
 
 - name: Apply EFS operator subscription
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: operators.coreos.com/v1alpha1
       kind: Subscription
@@ -32,28 +30,28 @@
         name: aws-efs-csi-driver-operator
         namespace: openshift-cluster-csi-drivers
         labels:
-          operators.coreos.com/aws-efs-csi-driver-operator.openshift-cluster-csi-drivers: ''
+          operators.coreos.com/aws-efs-csi-driver-operator.openshift-cluster-csi-drivers: ""
       spec:
         channel: stable
         installPlanApproval: Automatic
         name: aws-efs-csi-driver-operator
         source: redhat-operators
         sourceNamespace: openshift-marketplace
-    apply: yes
+    apply: true
 
 - name: Apply EFS operator driver
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: operator.openshift.io/v1
       kind: ClusterCSIDriver
       metadata:
-          name: efs.csi.aws.com
+        name: efs.csi.aws.com
       spec:
         managementState: Managed
-    apply: yes
+    apply: true
 
 - name: Ensure EFS operator pod is running
-  k8s_info:
+  kubernetes.core.k8s_info:
     kind: pod
     namespace: openshift-cluster-csi-drivers
     field_selectors:
@@ -81,7 +79,7 @@
 #     state: present
 
 - name: Disable EBS as default
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: storage.k8s.io/v1
       kind: StorageClass
@@ -91,7 +89,7 @@
           storageclass.kubernetes.io/is-default-class: "false"
 
 - name: Create NFS storage class
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: storage.k8s.io/v1
       kind: StorageClass
@@ -103,7 +101,7 @@
     state: present
 
 - name: Configure NFS persistent volumes
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: v1
       kind: PersistentVolume
@@ -121,8 +119,6 @@
         storageClassName: file
     state: present
   loop: "{{ ocp4_nfs_volumes }}"
-
-
 
 # - name: Apply EFS  PVC
 #   k8s:

@@ -1,9 +1,12 @@
 ---
+- name: Give sample user image registry editor role binding
+  register: my_output
+  changed_when: my_output.rc != 0
+  ansible.builtin.command: >
+    oc policy add-role-to-user registry-editor sample
 
 - name: Give sample user image registry viewer role binding
-  command:
-    cmd: "oc policy add-role-to-user registry-viewer sample"
-
-- name: Give sample user image registry editor role binding
-  command:
-    cmd: "oc policy add-role-to-user registry-editor sample"
+  register: my_output
+  changed_when: my_output.rc != 0
+  ansible.builtin.command: >-
+    oc policy add-role-to-user registry-viewer sample

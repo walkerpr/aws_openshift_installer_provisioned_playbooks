@@ -5,4 +5,3 @@ api_port: 6443
 machine_config_port: 22623
 
 bootstrap_mode: true
-

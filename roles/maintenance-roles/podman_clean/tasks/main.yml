@@ -1,7 +1,8 @@
 ---
-
 - name: Remove Podman Images
   become: true
-  command: podman rmi "{{ item.name }}:{{ tag }}"
+  register: my_output
+  changed_when: my_output.rc != 0
+  ansible.builtin.command: podman rmi "{{ item.name }}:{{ tag }}"
   loop: "{{ podman_images_to_remove }}"
   ignore_errors: true

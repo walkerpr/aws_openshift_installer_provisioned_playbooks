@@ -1,7 +1,6 @@
 ---
-
 - name: Play.
   hosts: api_ext_lb
-  gather_facts: no
+  gather_facts: false
   roles:
     - ocp-aux-roles/api_ext_lb

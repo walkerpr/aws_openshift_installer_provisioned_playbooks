@@ -1,8 +1,6 @@
 ---
-
 - name: Set registry operator management state to removed
-  k8s:
+  kubernetes.core.k8s:
     kubeconfig: "{{ kubeconfig_path }}"
     definition: "{{ lookup('file', 'manifests/configs.imageregistry.operator.openshift.io/cluster-config.yml') }}"
     state: present
-

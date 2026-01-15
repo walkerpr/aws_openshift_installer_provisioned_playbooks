@@ -1,5 +1,4 @@
 ---
-
 # - name: Generate initialize.ign file
 #   template:
 #     src: initialize.ign.j2
@@ -17,9 +16,12 @@
 #     mode:  0644
 
 - name: Generate ignition configs
-  command: >
+  register: my_output
+  changed_when: my_output.rc != 0
+  ansible.builtin.command: >
     openshift-install create ignition-configs --dir={{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster
   become_user: "{{ ansible_user }}"
+  become: false
 
 # - name: Get master.ign contents
 #   set_fact:

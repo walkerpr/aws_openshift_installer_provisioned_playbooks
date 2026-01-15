@@ -1,6 +1,6 @@
 ---
 - name: Create sample user password
-  community.aws.ssm_parameter:
+  amazon.aws.ssm_parameter:
     name: "/applicationsample/deployment{{ deployment_number }}/openshift/sample/password"
     description: "Password for sample user in the associated openshift cluster"
     string_type: "SecureString"
@@ -9,12 +9,12 @@
 
 - name: Get sample user password
   delegate_to: localhost
-  command: >
+  ansible.builtin.command: >
     aws ssm get-parameter --name /applicationsample/deployment{{ deployment_number }}/openshift/sample/password --query Parameter.Value --with-decryption --output=text
   register: sample_password
 
 - name: Create sample user to htpasswd file
-  htpasswd:
+  community.general.htpasswd:
     path: "{{ config_dir }}/deployment{{ deployment_number }}/ocp/htpasswdfile"
     name: "{{ sample_admin_user }}"
     password: "{{ sample_password.stdout }}"

@@ -1,7 +1,7 @@
 ---
 # .ansible-lint
 
-profile: basic # min, basic, moderate,safety, shared, production
+profile: production # min, basic, moderate,safety, shared, production
 
 # Allows dumping of results in SARIF format
 # sarif_file: result.sarif
@@ -49,8 +49,7 @@ use_default_rules: true
 # When putting ignores inside the ignore file, they are marked as ignored, but
 # still visible, making it easier to address later.
 skip_list:
-  - yaml[line-length]
-  - command-instead-of-shell
+  - var-naming[no-role-prefix]
   - role-name[path]
 
 # Ansible-lint does not automatically load rules that have the 'opt-in' tag.

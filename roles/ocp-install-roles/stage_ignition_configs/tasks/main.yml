@@ -1,21 +1,20 @@
 ---
-
 # Note: The bootstrap.ign file contains a pull secret. Access should
 # be restricted to the internal network only and it should be taken
 # taken down once the bootstrapping process is complete.
 
 - name: Copy bootstrap.ign to ignition web server
-  copy:
+  ansible.builtin.copy:
     src: "{{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster/bootstrap.ign"
     dest: "{{ serving_dir }}"
     owner: root
     group: apache
-    mode:  0640
+    mode: "0640"
 
 - name: Copy initialize.ign to ignition web server
-  copy:
+  ansible.builtin.copy:
     src: "{{ config_dir }}/deployment{{ deployment_number }}/ocp/initialize.ign"
     dest: "{{ serving_dir }}"
     owner: root
     group: apache
-    mode:  0640
+    mode: "0640"

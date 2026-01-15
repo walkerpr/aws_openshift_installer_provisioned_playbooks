@@ -1,7 +1,6 @@
 ---
-
 - name: Create Openshift Operators Redhat namespace
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: project.openshift.io/v1
       kind: project

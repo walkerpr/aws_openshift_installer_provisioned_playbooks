@@ -1,12 +1,11 @@
 ---
-
 - name: Ensure firewalld is installed
-  package:
+  ansible.builtin.package:
     name: firewalld
     state: present
 
 - name: Enable and start firewalld
-  service:
+  ansible.builtin.service:
     name: firewalld
     state: started
     enabled: true
@@ -14,9 +13,8 @@
 # We should eventually use https
 
 - name: Allow http protocol
-  firewalld:
+  ansible.posix.firewalld:
     service: http
     immediate: true
     permanent: true
     state: enabled
-

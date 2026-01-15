@@ -3,4 +3,3 @@
 config_dir: "/opt/ocp4"
 
 serving_dir: "/var/www/html"
-

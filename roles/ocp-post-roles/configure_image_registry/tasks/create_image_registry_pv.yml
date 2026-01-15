@@ -1,7 +1,6 @@
 ---
-
 - name: Create persistent volume for image registy
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: v1
       kind: PersistentVolume

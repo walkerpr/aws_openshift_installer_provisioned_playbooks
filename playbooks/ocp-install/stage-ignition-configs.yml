@@ -1,7 +1,6 @@
 ---
-
 - name: Play.
   hosts: resource
-  gather_facts: no
+  gather_facts: false
   roles:
     - ocp-install-roles/stage_ignition_configs

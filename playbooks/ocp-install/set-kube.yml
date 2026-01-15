@@ -3,6 +3,6 @@
   hosts: localhost
   tasks:
     - name: Setup Kubernetes.
-      include_role:
+      ansible.builtin.include_role:
         name: ocp-install-roles/install_openshift
         tasks_from: set_kube.yml

@@ -1,8 +1,7 @@
 ---
-
 - name: Play.
   hosts: localhost
-  gather_facts: no
+  gather_facts: false
   roles:
     - ocp-install-roles/create_roles
   var_files:

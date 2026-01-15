@@ -1,10 +1,10 @@
 ---
-
 - name: Remove immutable attribute on resolve.conf
   become: true
-  shell: chattr -i /etc/resolv.conf
-
+  register: my_output
+  changed_when: my_output.rc != 0
+  ansible.builtin.command: chattr -i /etc/resolv.conf
 - name: Reload NetworkManager service
-  service:
+  ansible.builtin.service:
     name: NetworkManager
     state: reloaded

@@ -7,5 +7,4 @@ metadata:
 spec:
   managementState: Removed
   storage:
-    s3: null
-
+    s3:

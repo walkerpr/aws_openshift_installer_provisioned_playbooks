@@ -1,7 +1,6 @@
 ---
-
 - name: Install openshift kiali operator
-  k8s:
+  kubernetes.core.k8s:
     namespace: openshift-operators
     definition:
       apiVersion: operators.coreos.com/v1alpha1
@@ -18,7 +17,7 @@
     state: present
 
 - name: Ensure kiali operator pod is running
-  k8s_info:
+  kubernetes.core.k8s_info:
     kind: pod
     namespace: openshift-operators
     field_selectors:

@@ -14,12 +14,12 @@
   register: subnet_info_1
 
 - name: Render exports file
-  template:
+  ansible.builtin.template:
     src: exports.j2
     dest: /etc/exports.d/deployment{{ deployment_number }}.exports
     owner: root
     group: root
-    mode:  0644
+    mode: "0644"
   notify: Refresh exports
   become: true
   become_user: root

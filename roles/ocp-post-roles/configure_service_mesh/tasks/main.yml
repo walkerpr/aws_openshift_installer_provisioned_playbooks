@@ -1,13 +1,11 @@
 ---
-
 - name: Create istio-system project
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('file', 'manifests/project/istio-system-project.yml') }}"
     state: present
 
 - name: Create basic service mesh control plane (SMCP)
-  k8s:
+  kubernetes.core.k8s:
     definition: "{{ lookup('file', 'manifests/smcp/basic-smcp.yml') }}"
     namespace: istio-system
     state: present
-

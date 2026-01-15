@@ -1,3 +1,4 @@
+---
 # Specifyies a list of volume names and sizes for nfs shares and pvs
 ocp4_nfs_volumes:
   - name: share1

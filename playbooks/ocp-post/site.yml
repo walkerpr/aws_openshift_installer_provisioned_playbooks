@@ -1,5 +1,4 @@
 ---
-
 - name: Import Playbook.
   import_playbook: create-htpasswd.yml
 

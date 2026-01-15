@@ -1,14 +1,14 @@
 ---
-- name: create ocp4 dir
-  file:
+- name: Create ocp4 dir
+  ansible.builtin.file:
     path: "{{ config_dir }}/deployment{{ deployment_number }}/ocp"
     state: directory
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
-    mode:  0755
+    mode: "0755"
 
 - name: Check if metadata file exists.
-  stat:
+  ansible.builtin.stat:
     path: "{{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster/metadata.json"
     get_attributes: false
     get_checksum: false
@@ -20,12 +20,12 @@
   register: caller_info
 
 - name: Create cluster directory
-  file:
+  ansible.builtin.file:
     path: "{{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster"
     state: directory
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
-    mode:  0755
+    mode: "0755"
   when: not metadata_exists.stat.exists
 
 - name: Get Metadata file from S3
@@ -34,66 +34,71 @@
     object: "/deployment{{ deployment_number }}/cluster/metadata.json"
     dest: "{{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster/metadata.json"
     mode: get
-  ignore_errors: true
   when: not metadata_exists.stat.exists
 
 - name: Disable termination protection on OpenShift nodes
-  ec2_instance:
+  amazon.aws.ec2_instance:
     filters:
       tag:sampleDeploymentNumber: "{{ deployment_number }}"
       platform-details: "Linux/UNIX"
       instance-state-name: running
     termination_protection: false
-  ignore_errors: true
 
 - name: Destroys existing cluster if exists
-  command: >
+  changed_when: destroy_results.rc != 0
+  ansible.builtin.command: >
     openshift-install destroy cluster --dir={{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster/ --log-level=debug
   ignore_errors: true
   timeout: 300
   register: destroy_results
 
 - name: Remove cluster directory
-  file:
+  ansible.builtin.file:
     path: "{{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster"
     state: absent
 
 - name: Create cluster directory
-  file:
+  ansible.builtin.file:
     path: "{{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster"
     state: directory
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
-    mode:  0755
+    mode: "0755"
 
-- set_fact:
+- name: Set install config source.
+  ansible.builtin.set_fact:
     source: "install-config.yaml.j2"
   when: ocp_platform == "none"
 
-- set_fact:
+- name: Set install config source.
+  ansible.builtin.set_fact:
     source: "aws-install-config.yaml.j2"
   when: ocp_platform == "aws"
 
 - name: Get deployment ssh key id
-  command: >
-    aws ssm get-parameter --name /sample/ec2/sample-deployment-{{ deployment_number }}/ec2/default-key/id --query Parameter.Value --with-decryption --output=text
+  changed_when: keyId.rc != 0
+  ansible.builtin.command: >
+    aws ssm get-parameter --name /sample/ec2/sample-deployment-{{ deployment_number }}/ec2/default-key/id \
+    --query Parameter.Value --with-decryption --output=text
   register: keyId
 
 - name: Get deployment ssh key id
-  command: >
+  changed_when: ssh_key.rc != 0
+  ansible.builtin.command: >
     aws ssm get-parameter --name /ec2/keypair/{{ keyId.stdout }}/public --query Parameter.Value --with-decryption --output=text
   register: ssh_key
 
 - name: Get deployment ssh key contents
-  command: >
+  changed_when: sshKey.rc != 0
+  ansible.builtin.command: >
     aws ssm get-parameter --name /ec2/keypair/{{ keyId.stdout }} --query Parameter.Value --with-decryption --output=text
   register: sshKey
 
 - name: Create ssh key
-  template:
+  ansible.builtin.template:
     src: templates/ssh.j2
     dest: ~/.ssh/deployment-{{ deployment_number }}.key
-    mode: '700'
+    mode: "700"
 
 - name: Get subnet 0
   amazon.aws.ec2_vpc_subnet_info:
@@ -108,7 +113,8 @@
   register: subnet_info_1
 
 - name: Get VPC prefix
-  command: >
+  changed_when: vpc_prefix.rc != 0
+  ansible.builtin.command: >
     aws ssm get-parameter --name /sample/vpc/cidr/prefix --query Parameter.Value --with-decryption --output=text
   register: vpc_prefix
 
@@ -135,8 +141,8 @@
     query: hosted_zone
   register: hosted_zones
 
-- name: get zone id
-  set_fact:
+- name: Get zone id
+  ansible.builtin.set_fact:
     matching_zone: "{{ zone.Id | regex_replace('/hostedzone/', '') }}"
   when: zone.Name == cluster_domain + '.'
   with_items: "{{ hosted_zones.HostedZones }}"
@@ -151,22 +157,21 @@
   register: ami_info
 
 - name: Find Latest RHCOS AMI
-  set_fact:
-    rhcos_ami_id: "{{ ami_info.images | sort(attribute='creation_date', reverse=True ) | map(attribute='image_id') }}"
+  ansible.builtin.set_fact:
+    rhcos_ami_id: "{{ ami_info.images | sort(attribute='creation_date', reverse=True) | map(attribute='image_id') }}"
 
 - name: Generate install config
-  template:
+  ansible.builtin.template:
     src: "{{ source }}"
     dest: "{{ config_dir }}/deployment{{ deployment_number }}/ocp/install-config.yaml"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
-    mode:  0600
-
+    mode: "0600"
 
 - name: Copy install config to cluster directory
-  copy:
-    src:  "{{ config_dir }}/deployment{{ deployment_number }}/ocp/install-config.yaml"
+  ansible.builtin.copy:
+    src: "{{ config_dir }}/deployment{{ deployment_number }}/ocp/install-config.yaml"
     dest: "{{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster/install-config.yaml"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
-    mode:  0600
+    mode: "0600"

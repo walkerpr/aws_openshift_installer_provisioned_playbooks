@@ -1,7 +1,7 @@
 ---
 - name: Play.
   hosts: nfs
-  gather_facts: no
+  gather_facts: false
   become: false
   roles:
     - ocp-aux-roles/nfs

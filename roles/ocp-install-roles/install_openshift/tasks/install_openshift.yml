@@ -1,8 +1,9 @@
 ---
 - name: Create cluster
-  command: >
+  register: my_output
+  changed_when: my_output.rc != 0
+  ansible.builtin.command: >
     openshift-install create cluster --dir {{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster
-
 - name: Get the current caller identity information
   amazon.aws.aws_caller_info:
   register: caller_info
@@ -10,7 +11,7 @@
 - name: Upload Metadata to S3
   amazon.aws.s3_object:
     bucket: "sample-{{ caller_info.account }}-openshift"
-    object:  "/deployment{{ deployment_number }}/cluster/metadata.json"
+    object: "/deployment{{ deployment_number }}/cluster/metadata.json"
     src: "{{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster/metadata.json"
     mode: put
     overwrite: always

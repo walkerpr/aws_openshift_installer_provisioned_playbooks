@@ -1,4 +1,5 @@
-trusted_certs: |
+---
+trusted_certs: |2-
 
   -----BEGIN CERTIFICATE-----
   MIID/DCCAuSgAwIBAgICATgwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNVBAYTAlVT

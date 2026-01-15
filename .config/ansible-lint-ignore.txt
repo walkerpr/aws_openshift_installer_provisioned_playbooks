@@ -1,0 +1,4 @@
+# This file contains ignores rule violations for ansible-lint
+playbooks/ocp-install/create-install-config.yml syntax-check[specific]
+playbooks/ocp-install/create-roles.yml syntax-check[specific]
+roles/ocp-post-roles/create_htpasswd/tasks/create_user.yml syntax-check[unknown-module]

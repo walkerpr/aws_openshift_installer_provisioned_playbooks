@@ -1,6 +1,7 @@
 ---
-
 - name: Remove Docker Images
-  command: docker rmi "{{ item.name }}:{{ tag }}"
+  register: my_output
+  changed_when: my_output.rc != 0
+  ansible.builtin.command: docker rmi "{{ item.name }}:{{ tag }}"
   loop: "{{ docker_images_to_remove }}"
   ignore_errors: true

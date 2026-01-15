@@ -1,14 +1,23 @@
 ---
 - name: Get worker security group name
-  shell: grep 'aws_security_group\"' {{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster/terraform.cluster.tfstate -A15 | grep worker -A11 | tail -1 | awk -F\" '{print $4}'
+  ansible.builtin.shell: |
+    set -o pipefail
+    grep 'aws_security_group\"' {{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster/terraform.cluster.tfstate -A15 | grep worker -A11 \
+    | tail -1 | awk -F\" '{print $4}'
   register: worker_security_group_name
+  changed_when: worker_security_group_name.rc != 0
 
 - name: Get master security group name
-  shell: grep 'aws_security_group\"' {{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster/terraform.cluster.tfstate -A15 | grep master -A11 | tail -1 | awk -F\" '{print $4}'
+  ansible.builtin.shell: |
+    set -o pipefail
+    grep 'aws_security_group\"' {{ config_dir }}/deployment{{ deployment_number }}/ocp/cluster/terraform.cluster.tfstate -A15 | grep master -A11 \
+    tail -1 | awk -F\" '{print $4}'
   register: master_security_group_name
+  changed_when: master_security_group_name.rc != 0
 
 - name: Get central services cidr prefix
-  command: >
+  changed_when: subnet_prefix.rc != 0
+  ansible.builtin.command: >
     aws ssm get-parameter --name /sample/vpc/central-services/subnet/cidr/prefix --query Parameter.Value --with-decryption --output=text
   register: subnet_prefix
 
@@ -33,16 +42,23 @@
     purge_rules: false
 
 - name: Set fact for SSH key
-  set_fact:
-     ansible_ssh_private_key_file: "~/.ssh/deployment-{{ deployment_number }}.key"
+  ansible.builtin.set_fact:
+    ansible_ssh_private_key_file: "~/.ssh/deployment-{{ deployment_number }}.key"
 
 - name: Get IPs of Nodes
-  shell: "kubectl describe nodes --kubeconfig=/home/ec2-user/.kube/deployment{{ deployment_number }}-ocp.conf | grep InternalIP: | awk {' print $2 '}"
+  changed_when: cluster_ips.rc != 0
+  ansible.builtin.shell: |
+    set -o pipefail
+    kubectl describe nodes --kubeconfig=/home/ec2-user/.kube/deployment{{ deployment_number }}-ocp.conf | grep InternalIP: \
+    | awk {' print $2'}
   register: cluster_ips
 
 - name: Add grace period configuration to kubelet.conf file.
-  shell: |
-    ssh -o "StrictHostKeyChecking no" -i {{ansible_ssh_private_key_file}} core@{{ item }} \
+  register: my_output
+  changed_when: my_output.rc != 0
+  ansible.builtin.shell: |
+    set -o pipefail
+    ssh -o "StrictHostKeyChecking no" -i {{ ansible_ssh_private_key_file }}  core@{{ item }} \
     'sudo chown core /etc/kubernetes/kubelet.conf; \
     echo "shutdownGracePeriodSeconds: 120" >> /etc/kubernetes/kubelet.conf; \
     echo "shutdownGracePeriodCriticalPodsSeconds: 100" >> /etc/kubernetes/kubelet.conf; \

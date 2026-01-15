@@ -1,27 +1,25 @@
 ---
-
 - name: Install firewalld
-  package:
+  ansible.builtin.package:
     name: firewalld
     state: present
 
 - name: Enable and start firewalld
-  systemd:
+  ansible.builtin.systemd:
     name: firewalld
     state: started
     enabled: true
 
 - name: Configure firewall to allow http
-  firewalld:
+  ansible.posix.firewalld:
     port: "{{ http_port }}/tcp"
-    immediate: yes
-    permanent: yes
+    immediate: true
+    permanent: true
     state: enabled
 
 - name: Configure firewall to allow https
-  firewalld:
+  ansible.posix.firewalld:
     port: "{{ https_port }}/tcp"
-    immediate: yes
-    permanent: yes
+    immediate: true
+    permanent: true
     state: enabled
-

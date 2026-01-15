@@ -3,6 +3,6 @@
   hosts: localhost
   tasks:
     - name: Install OpenShift.
-      include_role:
+      ansible.builtin.include_role:
         name: ocp-install-roles/install_openshift
         tasks_from: install_openshift.yml

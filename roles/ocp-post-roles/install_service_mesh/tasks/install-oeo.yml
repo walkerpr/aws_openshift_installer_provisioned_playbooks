@@ -1,7 +1,6 @@
 ---
-
 - name: Create operator group
-  k8s:
+  kubernetes.core.k8s:
     namespace: openshift-operators-redhat
     definition:
       apiVersion: operators.coreos.com/v1
@@ -11,7 +10,7 @@
     state: present
 
 - name: Install openshift elasticsearch operator
-  k8s:
+  kubernetes.core.k8s:
     namespace: openshift-operators-redhat
     definition:
       apiVersion: operators.coreos.com/v1alpha1
@@ -31,7 +30,7 @@
     state: present
 
 - name: Ensure openshift elasticsearch operator pod is running
-  k8s_info:
+  kubernetes.core.k8s_info:
     kind: pod
     namespace: openshift-operators-redhat
     field_selectors:

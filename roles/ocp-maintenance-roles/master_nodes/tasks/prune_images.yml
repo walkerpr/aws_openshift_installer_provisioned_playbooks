@@ -1,3 +1,6 @@
+---
 - name: Prune images
   become: true
-  shell: podman image prune --force
+  register: my_output
+  changed_when: my_output.rc != 0
+  ansible.builtin.command: podman image prune --force

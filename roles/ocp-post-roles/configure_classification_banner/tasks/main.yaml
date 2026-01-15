@@ -1,4 +1,3 @@
 ---
-
 - name: Import task.
-  import_tasks: configure_banner.yml
+  ansible.builtin.import_tasks: configure_banner.yml

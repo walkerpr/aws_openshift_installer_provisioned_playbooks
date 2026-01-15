@@ -1,7 +1,6 @@
 ---
-
 - name: Configure image registy to use PVC for storage and use default route
-  k8s:
+  kubernetes.core.k8s:
     definition:
       apiVersion: imageregistry.operator.openshift.io/v1
       kind: Config

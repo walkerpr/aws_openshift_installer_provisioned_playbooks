@@ -1,10 +1,7 @@
 ---
-
-# - name: Import task.
-  import_tasks: create_image_registry_pv.yml
-
 - name: Import task.
-  import_tasks: configure_image_registry_project.yml
-
+  ansible.builtin.import_tasks: create_image_registry_pv.yml
 - name: Import task.
-  import_tasks: configure_permissions.yml
+  ansible.builtin.import_tasks: configure_image_registry_project.yml
+- name: Import task.
+  ansible.builtin.import_tasks: configure_permissions.yml

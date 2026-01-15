@@ -1,8 +1,7 @@
 ---
-
 - name: Play.
   hosts: localhost
-  gather_facts: no
+  gather_facts: false
   roles:
     - ocp-post-roles/add_graceful_shutdown
   environment:

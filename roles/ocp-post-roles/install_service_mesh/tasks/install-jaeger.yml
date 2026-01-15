@@ -1,7 +1,6 @@
 ---
-
 - name: Create operator group
-  k8s:
+  kubernetes.core.k8s:
     namespace: openshift-distributed-tracing
     definition:
       apiVersion: operators.coreos.com/v1
@@ -11,7 +10,7 @@
     state: present
 
 - name: Install openshift jaeger operator
-  k8s:
+  kubernetes.core.k8s:
     namespace: openshift-distributed-tracing
     definition:
       apiVersion: operators.coreos.com/v1alpha1
@@ -28,7 +27,7 @@
     state: present
 
 - name: Ensure jaeger operator pod is running
-  k8s_info:
+  kubernetes.core.k8s_info:
     kind: pod
     namespace: openshift-distributed-tracing
     field_selectors:

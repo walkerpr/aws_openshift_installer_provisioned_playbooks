@@ -1,20 +1,19 @@
 ---
-
 - name: Configure NFS sub-directories shares
-  file:
+  ansible.builtin.file:
     path: "{{ nfs_dir }}/{{ item.name }}"
     state: directory
     owner: nobody
     group: nobody
-    mode:  0777
+    mode: "0777"
   loop: "{{ ocp4_nfs_volumes }}"
   become: true
 
 - name: Create mount points for persistent storage and Docker registry
-  file:
+  ansible.builtin.file:
     path: "{{ nfs_dir }}/registry"
     state: directory
     owner: nobody
     group: nobody
-    mode: 0777
+    mode: "0777"
   become: true

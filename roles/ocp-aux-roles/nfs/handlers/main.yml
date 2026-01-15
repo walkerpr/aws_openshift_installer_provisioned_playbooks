@@ -1,3 +1,6 @@
+---
 - name: Refresh exports
-  command: "exportfs -r"
+  register: my_output
+  changed_when: my_output.rc != 0
+  ansible.builtin.command: "exportfs -r"
   become: true

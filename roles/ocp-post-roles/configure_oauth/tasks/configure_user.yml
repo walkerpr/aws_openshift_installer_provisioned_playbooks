@@ -1,5 +1,6 @@
 ---
-
 - name: Add cluster admin role binding to sample user
-  command:
+  register: my_output
+  changed_when: my_output.rc != 0
+  ansible.builtin.command:
     cmd: "oc adm policy add-cluster-role-to-user cluster-admin sample"

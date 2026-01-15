@@ -1,4 +1,3 @@
 ---
-
 - name: Import task.
-  import_tasks: prune_images.yml
+  ansible.builtin.import_tasks: prune_images.yml

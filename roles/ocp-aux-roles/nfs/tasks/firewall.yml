@@ -1,19 +1,18 @@
 ---
-
 - name: Ensure firewalld is installed
-  package:
+  ansible.builtin.package:
     name: firewalld
     state: present
 
 - name: Ensure firewalld is enabled and started
-  service:
+  ansible.builtin.service:
     name: firewalld
     state: started
     enabled: true
 
 - name: Allow NFS traffic
-  firewalld:
+  ansible.posix.firewalld:
     service: nfs
-    immediate: yes
-    permanent: yes
+    immediate: true
+    permanent: true
     state: enabled

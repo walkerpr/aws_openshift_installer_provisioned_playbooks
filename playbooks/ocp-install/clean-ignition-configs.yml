@@ -1,7 +1,0 @@
----
-
-- name: Play.
-  hosts: resource
-  gather_facts: no
-  roles:
-    - ocp-install-roles/clean_ignition_configs

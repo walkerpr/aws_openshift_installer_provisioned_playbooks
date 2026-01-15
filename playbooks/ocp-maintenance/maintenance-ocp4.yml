@@ -1,9 +1,8 @@
 ---
-
 - name: Play.
   hosts: master1
-  gather_facts: no
+  gather_facts: false
   environment:
-      KUBECONFIG: "/home/ec2-user/.kube/deployment{{ deployment_number }}-ocp.conf"
+    KUBECONFIG: "/home/ec2-user/.kube/deployment{{ deployment_number }}-ocp.conf"
   roles:
     - ocp-maintenance-roles/master_nodes
