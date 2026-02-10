@@ -1,9 +1,9 @@
-OpenShift 4 - Installation
+OpenShift - Installation
 ==============================
 
 This document provides guidance on Installing OpenShift 4.
 
-- [OpenShift 4 - Installation](#openshift-4---installation)
+- [OpenShift - Installation](#openshift---installation)
 - [IMPORTANT](#important)
 - [Prerequisites](#prerequisites)
 - [Variables](#variables)
